@@ -2,21 +2,21 @@
  * Hooks React Query pour les fonctionnalités utilisateur
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  getCurrentUser, 
-  updateUserProfile, 
-  getUserById, 
-  checkAuthStatus 
-} from '../services';
-import { UserProfileUpdate } from '@/types/user';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  getCurrentUser,
+  updateUserProfile,
+  getUserById,
+  checkAuthStatus,
+} from "../services";
+import { UserProfileUpdate } from "@/types/user";
 
 // Clés de requête pour React Query
 export const userKeys = {
-  all: ['users'] as const,
-  currentUser: () => [...userKeys.all, 'current-user'] as const,
+  all: ["users"] as const,
+  currentUser: () => [...userKeys.all, "current-user"] as const,
   user: (id: string) => [...userKeys.all, id] as const,
-  authStatus: () => [...userKeys.all, 'auth-status'] as const,
+  authStatus: () => [...userKeys.all, "auth-status"] as const,
 };
 
 /**
@@ -28,7 +28,7 @@ export const useCurrentUser = () => {
     queryFn: getCurrentUser,
     retry: (failureCount, error) => {
       // Ne pas réessayer si l'erreur est 401 (non autorisé)
-      if (error instanceof Error && error.message.includes('401')) {
+      if (error instanceof Error && error.message.includes("401")) {
         return false;
       }
       return failureCount < 2;
@@ -63,13 +63,14 @@ export const useAuthStatus = () => {
  */
 export const useUpdateUserProfile = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: (profileData: UserProfileUpdate) => updateUserProfile(profileData),
+    mutationFn: (profileData: UserProfileUpdate) =>
+      updateUserProfile(profileData),
     onSuccess: (data) => {
       // Mettre à jour le cache utilisateur après une mise à jour réussie
       queryClient.setQueryData(userKeys.currentUser(), data);
-      
+
       // Invalider la requête utilisateur pour forcer un rafraîchissement si nécessaire
       queryClient.invalidateQueries({ queryKey: userKeys.currentUser() });
     },
