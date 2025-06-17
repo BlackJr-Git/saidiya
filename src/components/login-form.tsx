@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
 
 // Définir le schéma de validation
 const loginSchema = z.object({
@@ -97,9 +98,9 @@ export function LoginForm({
       </div>
       <div className="text-center text-sm">
         Vous n&apos;avez pas de compte ?{" "}
-        <a href="#" className="underline underline-offset-4">
+        <Link href="/signup" className="underline underline-offset-4">
           S&apos;inscrire
-        </a>
+        </Link>
       </div>
     </form>
   )
