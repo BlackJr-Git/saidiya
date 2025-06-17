@@ -13,24 +13,24 @@ export const metadata: Metadata = {
       ? `https://${process.env.VERCEL_URL}`
       : `http://localhost:${process.env.PORT || 3000}`
   ),
-  title: "shadcn/ui sidebar",
+  title: "Saidiya | Plateforme de Financement Participatif",
   description:
-    "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
+    "Une plateforme innovante de financement participatif pour soutenir des projets impactants et créer du changement ensemble.",
   alternates: {
     canonical: "/"
   },
   openGraph: {
     url: "/",
-    title: "shadcn/ui sidebar",
+    title: "Saidiya | Financement Participatif",
     description:
-      "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness.",
+      "Découvrez Saidiya, la plateforme de crowdfunding qui connecte les porteurs de projets avec des investisseurs passionnés pour réaliser des initiatives inspirantes.",
     type: "website"
   },
   twitter: {
     card: "summary_large_image",
-    title: "shadcn/ui sidebar",
+    title: "Saidiya | Financement Participatif",
     description:
-      "A stunning and functional retractable sidebar for Next.js built on top of shadcn/ui complete with desktop and mobile responsiveness."
+      "Découvrez Saidiya, la plateforme de crowdfunding qui connecte les porteurs de projets avec des investisseurs passionnés pour réaliser des initiatives inspirantes."
   }
 };
 
