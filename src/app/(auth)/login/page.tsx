@@ -1,6 +1,6 @@
-import { GalleryVerticalEnd } from "lucide-react"
-import { LoginForm } from "@/components/login-form"
-import Image from "next/image"
+import { GalleryVerticalEnd } from "lucide-react";
+import { LoginForm } from "@/features/auth/components/login-form";
+import Image from "next/image";
 
 export default function LoginPage() {
   return (
@@ -30,5 +30,5 @@ export default function LoginPage() {
         />
       </div>
     </div>
-  )
+  );
 }

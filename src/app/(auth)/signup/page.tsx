@@ -1,7 +1,7 @@
-import { GalleryVerticalEnd } from "lucide-react"
-import { SignupForm } from "@/components/signup-form"
-import Image from "next/image"
-import Link from "next/link"
+import { GalleryVerticalEnd } from "lucide-react";
+import { SignupForm } from "@/features/auth/components/signup-form";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function SignupPage() {
   return (
@@ -31,5 +31,5 @@ export default function SignupPage() {
         />
       </div>
     </div>
-  )
+  );
 }

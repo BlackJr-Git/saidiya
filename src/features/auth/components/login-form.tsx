@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { authClient } from "@/lib/shared/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -16,9 +16,9 @@ import { useRouter } from "next/navigation";
 const loginSchema = z.object({
   email: z.string().email("Format d'email invalide"),
   password: z.string().min(1, "Le mot de passe est requis"),
-})
+});
 
-type LoginFormValues = z.infer<typeof loginSchema>
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginForm({
   className,
@@ -35,7 +35,7 @@ export function LoginForm({
       email: "",
       password: "",
     },
-  })
+  });
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
@@ -65,10 +65,14 @@ export function LoginForm({
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+    >
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Connectez-vous à votre compte</h1>
         <p className="text-muted-foreground text-sm text-balance">
@@ -78,11 +82,11 @@ export function LoginForm({
       <div className="grid gap-6">
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
-          <Input 
-            id="email" 
-            type="email" 
-            placeholder="m@example.com" 
-            {...register("email")} 
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            {...register("email")}
           />
           {errors.email && (
             <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -98,11 +102,7 @@ export function LoginForm({
               Mot de passe oublié ?
             </a>
           </div>
-          <Input 
-            id="password" 
-            type="password" 
-            {...register("password")} 
-          />
+          <Input id="password" type="password" {...register("password")} />
           {errors.password && (
             <p className="text-sm text-red-500">{errors.password.message}</p>
           )}
@@ -132,5 +132,5 @@ export function LoginForm({
         </Link>
       </div>
     </form>
-  )
+  );
 }
