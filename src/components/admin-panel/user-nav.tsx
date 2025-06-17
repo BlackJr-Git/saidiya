@@ -21,9 +21,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentUser } from "@/features/user/hooks";
+import { signOut } from "@/features/auth/services";
+import { useRouter } from "next/navigation";
 
 export function UserNav() {
   const { data: currentUser } = useCurrentUser();
+  const router = useRouter();
 
   if (!currentUser) {
     return null;
@@ -79,7 +82,7 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
+        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => signOut(router, "/")}>
           <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
           Deconnexion
         </DropdownMenuItem>
