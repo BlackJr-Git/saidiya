@@ -8,6 +8,9 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
+import { authClient } from "@/lib/shared/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // Définir le schéma de validation
 const loginSchema = z.object({
@@ -21,6 +24,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -33,9 +37,34 @@ export function LoginForm({
     },
   })
 
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Données du formulaire:", data)
-    // Traiter la connexion ici
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      await authClient.signIn.email(
+        {
+          email: data.email,
+          password: data.password,
+          callbackURL: "/dashboard",
+        },
+        {
+          onRequest: () => {
+            //show loading
+            toast.loading("Connexion en cours...");
+          },
+          onSuccess: () => {
+            //redirect to the dashboard or sign in page
+            toast.success("Connexion reussie");
+            router.push("/dashboard");
+          },
+          onError: (ctx) => {
+            // display the error message
+            console.log("Erreur de l'authentification:", ctx.error);
+            toast.error(ctx.error.message);
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Erreur lors de la connexion:", error);
+    }
   }
 
   return (
