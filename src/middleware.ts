@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { siteConfig } from "@/config";
+// import { siteConfig } from "@/config";
 
 // Liste des chemins d'accès publics qui ne nécessitent pas d'authentification
 const PUBLIC_PATHS = [
@@ -78,17 +78,17 @@ export async function middleware(request: NextRequest) {
   }
 
   // Vérifier la présence d'un cookie d'authentification
-  const authCookie = request.cookies.get("better_auth.session-token");
+//   const authCookie = request.cookies.get("better_auth.session-token");
   
   // Si aucun cookie d'authentification n'est trouvé, rediriger vers la page de connexion
-  if (!authCookie) {
-    const loginUrl = new URL(siteConfig.auth.loginPath, request.url);
+//   if (!authCookie) {
+//     const loginUrl = new URL(siteConfig.auth.loginPath, request.url);
     
-    // Ajouter le callbackUrl pour rediriger après connexion
-    loginUrl.searchParams.set("callbackUrl", pathname);
+//     // Ajouter le callbackUrl pour rediriger après connexion
+//     loginUrl.searchParams.set("callbackUrl", pathname);
     
-    return NextResponse.redirect(loginUrl);
-  }
+//     return NextResponse.redirect(loginUrl);
+//   }
 
   // L'utilisateur est authentifié, permettre l'accès
   return NextResponse.next();
