@@ -7,24 +7,25 @@ export const siteConfig = {
   // Basic site information
   name: "Saidiya",
   title: "Saidiya - Plateforme de Financement Participatif",
-  description: "Une plateforme innovante de financement participatif pour soutenir des projets impactants et créer du changement ensemble.",
+  description:
+    "Une plateforme innovante de financement participatif pour soutenir des projets impactants et créer du changement ensemble.",
   url: "https://saidiya.com",
-  
+
   // Branding and visuals
   logo: {
     main: "/images/logo.svg",
     light: "/images/logo-light.svg",
     dark: "/images/logo-dark.svg",
-    favicon: "/favicon.ico"
+    favicon: "/favicon.ico",
   },
-  
+
   // Contact information
   contact: {
     email: "contact@saidiya.com",
     phone: "+1 (123) 456-7890",
-    address: "123 Heritage Lane, Cultural District, CA 94123"
+    address: "123 Heritage Lane, Cultural District, CA 94123",
   },
-  
+
   // Social media links
   social: {
     facebook: "https://facebook.com/saidiya",
@@ -39,16 +40,16 @@ export const siteConfig = {
     github: "https://github.com/saidiya",
     threads: "https://threads.net/saidiya",
   },
-  
+
   // Authentication settings
   auth: {
     loginPath: "/login",
     signupPath: "/signup",
     forgotPasswordPath: "/forgot-password",
     callbackUrl: "/dashboard",
-    providers: ["credentials", "google", "facebook"]
+    providers: ["credentials", "google", "facebook"],
   },
-  
+
   // Navigation
   navigation: {
     main: [
@@ -56,15 +57,15 @@ export const siteConfig = {
       { name: "About", path: "/about" },
       { name: "Features", path: "/features" },
       { name: "Pricing", path: "/pricing" },
-      { name: "Contact", path: "/contact" }
+      { name: "Contact", path: "/contact" },
     ],
     footer: [
       { name: "Privacy", path: "/privacy" },
       { name: "Terms", path: "/terms" },
-      { name: "FAQ", path: "/faq" }
-    ]
+      { name: "FAQ", path: "/faq" },
+    ],
   },
-  
+
   // Theme configuration
   theme: {
     colors: {
@@ -72,41 +73,42 @@ export const siteConfig = {
       secondary: "#10B981",
       accent: "#F59E0B",
       background: "#FFFFFF",
-      text: "#111827"
+      text: "#111827",
     },
     fonts: {
       heading: "'Poppins', sans-serif",
-      body: "'Inter', sans-serif"
-    }
+      body: "'Inter', sans-serif",
+    },
   },
-  
+
   // API endpoints
   api: {
-    baseUrl: process.env.NODE_ENV === "production" 
-      ? "https://api.saidiya.com" 
-      : "http://localhost:3001",
+    baseUrl:
+      process.env.NODE_ENV === "production"
+        ? "https://api.saidiya.com"
+        : "http://localhost:3001",
     endpoints: {
       auth: "/api/auth",
       user: "/api/user",
       profile: "/api/profile",
-      heritage: "/api/heritage"
-    }
+      heritage: "/api/heritage",
+    },
   },
-  
+
   // Feature flags
   features: {
     heritageMapping: true,
     familyTree: true,
     culturalInsights: true,
     dnaIntegration: false,
-    communityForums: true
+    communityForums: true,
   },
-  
+
   // Analytics
   analytics: {
     googleAnalyticsId: process.env.NEXT_PUBLIC_GA_ID,
-    enabledInDevelopment: false
-  }
+    enabledInDevelopment: false,
+  },
 };
 
 export default siteConfig;
