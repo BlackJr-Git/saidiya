@@ -11,7 +11,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/shared/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 // Définir le schéma de validation
 const signupSchema = z
   .object({
@@ -146,6 +146,7 @@ export function SignupForm({
           </span>
         </div>
         <Button variant="outline" className="w-full">
+          <GitHubLogoIcon className="mr-2 h-4 w-4" />
           S&apos;inscrire avec GitHub
         </Button>
       </div>
