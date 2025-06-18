@@ -71,6 +71,12 @@ export function Logo({
         alt={imageAlt}
         width={sizes[size].image.width}
         height={sizes[size].image.height}
+        style={{
+          width: "auto",
+          height: "auto",
+          maxWidth: sizes[size].image.width,
+          maxHeight: sizes[size].image.height
+        }}
         className={cn("shrink-0", imageClassName)}
       />
       {showText && (
