@@ -139,11 +139,11 @@ export default function CampagnesPage() {
             </div>
 
             <TabsContent value="active" className="mt-0">
-              <CampagneGrid 
+              {/* <CampagneGrid 
                 campagnes={displayCampagnes} 
                 isLoading={isLoading && !useMockData} 
                 emptyMessage="Aucune campagne active pour le moment"
-              />
+              /> */}
               {useMockData && (
                 <div className="mt-4 text-xs text-muted-foreground text-center">
                   ⓘ Affichage de données fictives à des fins de développement
@@ -165,10 +165,10 @@ export default function CampagnesPage() {
             </TabsContent>
 
             <TabsContent value="all" className="mt-0">
-              <CampagneGrid 
+              {/* <CampagneGrid 
                 campagnes={displayCampagnes} 
                 isLoading={isLoading && !useMockData}
-              />
+              /> */}
               {useMockData && (
                 <div className="mt-4 text-xs text-muted-foreground text-center">
                   ⓘ Affichage de données fictives à des fins de développement
