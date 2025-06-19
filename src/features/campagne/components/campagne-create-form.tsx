@@ -10,6 +10,13 @@ import {
   Image as ImageIcon,
   Loader2,
   AlertTriangle,
+  GraduationCap,
+  Leaf,
+  Heart,
+  Handshake,
+  Palette,
+  Lightbulb,
+  Building,
 } from "lucide-react";
 
 import {
@@ -30,13 +37,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// Imports de select supprimés car remplacés par des cartes
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 
@@ -66,15 +67,15 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Liste des catégories disponibles
+// Liste des catégories disponibles avec icônes
 const categories = [
-  { id: "education", label: "Éducation" },
-  { id: "environment", label: "Environnement" },
-  { id: "health", label: "Santé" },
-  { id: "social", label: "Action sociale" },
-  { id: "culture", label: "Culture & Arts" },
-  { id: "tech", label: "Innovation & Technologie" },
-  { id: "community", label: "Développement local" },
+  { id: "education", label: "Éducation", icon: GraduationCap },
+  { id: "environment", label: "Environnement", icon: Leaf },
+  { id: "health", label: "Santé", icon: Heart },
+  { id: "social", label: "Action sociale", icon: Handshake },
+  { id: "culture", label: "Culture & Arts", icon: Palette },
+  { id: "tech", label: "Innovation & Technologie", icon: Lightbulb },
+  { id: "community", label: "Développement local", icon: Building },
 ];
 
 // Composant pour afficher les conseils
@@ -280,23 +281,29 @@ export function CampagneCreateForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Catégorie</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez une catégorie" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormControl>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+                      {categories.map((category) => {
+                        const Icon = category.icon;
+                        const isSelected = field.value === category.id;
+                        return (
+                          <div
+                            key={category.id}
+                            className={`flex flex-col items-center border rounded-lg p-4 cursor-pointer transition-all ${isSelected ? "border-primary bg-primary/10 shadow-sm" : "border-muted-foreground/20 hover:border-primary/50 hover:bg-accent"}`}
+                            onClick={() => field.onChange(category.id)}
+                          >
+                            <div className={`mb-2 p-2 rounded-full ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                              <Icon size={24} className={isSelected ? "text-primary-foreground" : "text-muted-foreground"} />
+                            </div>
+                            <span className="text-sm font-medium">{category.label}</span>
+                            {isSelected && (
+                              <Check size={16} className="text-primary absolute top-2 right-2" />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
