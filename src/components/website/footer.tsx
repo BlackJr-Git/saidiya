@@ -4,34 +4,34 @@ import { siteConfig } from "@/config";
 
 const links = [
   {
-    title: "Features",
+    title: "A propos",
     href: "#",
   },
   {
-    title: "Solution",
+    title: "Contact",
     href: "#",
   },
   {
-    title: "Customers",
+    title: "Campagnes",
     href: "#",
   },
   {
-    title: "Pricing",
+    title: "Aides",
     href: "#",
   },
   {
-    title: "Help",
+    title: "Blog",
     href: "#",
   },
   {
-    title: "About",
+    title: "FAQ",
     href: "#",
   },
 ];
 
 export default function FooterSection() {
   return (
-    <footer className="py-16 md:py-32 border-t border-dotted border-border">
+    <footer className="py-16 border-t border-dotted border-border">
       <div className="mx-auto max-w-5xl px-6">
         <div className="mx-auto block size-fit">
           <Logo />
