@@ -49,16 +49,38 @@ export const CampagneCard = ({ campagne, variant = "default" }: CampagneCardProp
   const isCompact = variant === "compact";
 
   // Date relative (exemple: "il y a 2 jours")
-  const timeAgo = formatDistanceToNow(new Date(campagne.createdAt), {
-    addSuffix: true,
-    locale: fr,
-  });
+  const timeAgo = (() => {
+    try {
+      if (!campagne.createdAt) return "récemment";
+      const date = new Date(campagne.createdAt);
+      // Check if date is valid
+      if (isNaN(date.getTime())) return "récemment";
+      return formatDistanceToNow(date, {
+        addSuffix: true,
+        locale: fr,
+      });
+    } catch (error) {
+      console.error("Error formatting createdAt date:", error);
+      return "récemment";
+    }
+  })();
 
   // Calcul du temps restant si la campagne est active
-  const daysLeft = Math.max(
-    0, 
-    Math.ceil((new Date(endDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24))
-  );
+  const daysLeft = (() => {
+    try {
+      if (!endDate) return 0;
+      const endDateTime = new Date(endDate);
+      // Check if date is valid
+      if (isNaN(endDateTime.getTime())) return 0;
+      return Math.max(
+        0, 
+        Math.ceil((endDateTime.getTime() - new Date().getTime()) / (1000 * 3600 * 24))
+      );
+    } catch (error) {
+      console.error("Error calculating days left:", error);
+      return 0;
+    }
+  })();
 
   return (
     <Card className="h-full overflow-hidden transition-all hover:shadow-md">

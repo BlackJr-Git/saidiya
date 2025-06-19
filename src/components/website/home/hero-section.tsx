@@ -42,10 +42,10 @@ export function HeroSection() {
             {/* Bouton d'action (CTA) */}
             <div className="flex flex-col sm:flex-row gap-4 mt-6 justify-center">
               <Button size="lg" asChild>
-                <Link href="/start-campaign">Démarrer une campagne</Link>
+                <Link href="/campagnes/create">Démarrer une campagne</Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link href="/projects">Voir les campagnes</Link>
+                <Link href="/campagnes">Voir les campagnes</Link>
               </Button>
             </div>
 
