@@ -107,6 +107,8 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
     currentAmount,
     progress,
     status,
+    localisation,
+    categorie,
     createdAt
   } = campagne;
   
@@ -168,7 +170,7 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
               </div>
               <div className="p-4 bg-muted rounded-lg">
                 <dt className="text-sm font-medium text-muted-foreground mb-1">Catégorie</dt>
-                <dd className="text-base">Développement local</dd>
+                <dd className="text-base">{categorie}</dd>
               </div>
               <div className="p-4 bg-muted rounded-lg">
                 <dt className="text-sm font-medium text-muted-foreground mb-1">Porteur de projet</dt>
@@ -176,7 +178,7 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
               </div>
               <div className="p-4 bg-muted rounded-lg">
                 <dt className="text-sm font-medium text-muted-foreground mb-1">Localisation</dt>
-                <dd className="text-base">Montréal, Canada</dd>
+                <dd className="text-base">{localisation}</dd>
               </div>
             </dl>
           </div>
@@ -238,10 +240,10 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="/avatars/01.png" />
-                        <AvatarFallback>JD</AvatarFallback>
+                        <AvatarFallback>GN</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium">Julie Dupont</p>
+                        <p className="text-sm font-medium">Gad Ntenta</p>
                         <p className="text-xs text-muted-foreground">Il y a 2 jours</p>
                       </div>
                     </div>
@@ -253,10 +255,10 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="/avatars/05.png" />
-                        <AvatarFallback>TM</AvatarFallback>
+                        <AvatarFallback>JA</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium">Thomas Martin</p>
+                        <p className="text-sm font-medium">Junior Asosa</p>
                         <p className="text-xs text-muted-foreground">Il y a 5 jours</p>
                       </div>
                     </div>
@@ -268,10 +270,10 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src="/avatars/03.png" />
-                        <AvatarFallback>SB</AvatarFallback>
+                        <AvatarFallback>GR</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium">Sophie Bernard</p>
+                        <p className="text-sm font-medium">Grace Imani</p>
                         <p className="text-xs text-muted-foreground">Il y a 1 semaine</p>
                       </div>
                     </div>
