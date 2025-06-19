@@ -101,8 +101,8 @@ export const CampagneCard = ({ campagne, variant = "default" }: CampagneCardProp
               </div>
             )}
             <div className="absolute right-2 top-2">
-              <Badge variant={statusConfig[status].variant}>
-                {statusConfig[status].label}
+              <Badge variant={status && statusConfig[status] ? statusConfig[status]?.variant : "outline"}>
+                {status && statusConfig[status] ? statusConfig[status]?.label : "Inconnu"}
               </Badge>
             </div>
           </div>
