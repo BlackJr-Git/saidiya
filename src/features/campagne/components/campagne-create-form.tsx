@@ -380,10 +380,12 @@ export function CampagneCreateForm() {
                     </Label>
                     <input
                       id="image-upload"
+                      name="image-upload"
                       type="file"
                       accept="image/*"
                       className="hidden"
                       onChange={handleImageChange}
+                      aria-label="Upload d'image pour la campagne"
                     />
                   </div>
                 </div>
