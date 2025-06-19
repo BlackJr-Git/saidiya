@@ -1,7 +1,7 @@
 "use client";
 
 import { PublicCampagneInfo } from "@/types/campagne";
-import { CampagneCard } from "./campagne-card";
+// import { CampagneCard } from "./campagne-card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface CampagneGridProps {
@@ -47,9 +47,9 @@ export const CampagneGrid = ({
 
   return (
     <div className={`grid ${gridClasses} gap-4 md:gap-6`}>
-      {campagnes?.map((campagne) => (
+      {/* {campagnes?.map((campagne) => (
         <CampagneCard key={campagne.id} campagne={campagne} variant={variant} />
-      ))}
+      ))} */}
     </div>
   );
 };
