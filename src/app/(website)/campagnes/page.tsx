@@ -32,8 +32,8 @@ export default function CampagnesPage() {
   });
   
   useEffect(() => {
-    // Utiliser les données fictives en cas d'erreur ou pendant le chargement en développement
-    if (!useMockData && (isError || (isLoading && process.env.NODE_ENV === "development"))) {
+    // Utiliser les données fictives en cas d'erreur ou pendant le chargement (en développement ou production)
+    if (!useMockData && (isError || isLoading)) {
       console.log("Utilisation des données fictives pour les campagnes");
       
       // Filtrer les campagnes selon l'onglet actif

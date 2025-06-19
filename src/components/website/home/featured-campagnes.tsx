@@ -23,7 +23,7 @@ export default function FeaturedCampagnes() {
 
   useEffect(() => {
     // Éviter la boucle infinie - ne configurez les données fictives qu'une seule fois
-    if (!useMockData && (isError || (isLoading && process.env.NODE_ENV === "development"))) {
+    if (!useMockData && (isError || isLoading)) {
       console.log("Utilisation des données fictives pour les campagnes");
       // Filtrer les campagnes actives uniquement et convertir les dates string en objets Date
       const mockCampagnes = mockData.campagnes

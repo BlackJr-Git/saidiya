@@ -29,7 +29,7 @@ export default function CampagnePage({
     // Utiliser les données factices si l'API échoue ou en développement
     if (
       !useMockData &&
-      (isError || (isLoading && process.env.NODE_ENV === "development"))
+      (isError || (isLoading))
     ) {
       console.log("Utilisation des données fictives pour la campagne", id);
 
