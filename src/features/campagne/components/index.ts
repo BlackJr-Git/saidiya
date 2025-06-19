@@ -1,2 +1,3 @@
-export * from './campagne-card';
-export * from './campagne-grid';
+export { CampagneCard } from "./campagne-card";
+export { CampagneGrid } from "./campagne-grid";
+export { default as CampagneDetail } from "./campagne-detail";

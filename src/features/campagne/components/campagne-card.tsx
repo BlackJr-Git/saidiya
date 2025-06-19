@@ -62,25 +62,27 @@ export const CampagneCard = ({ campagne, variant = "default" }: CampagneCardProp
 
   return (
     <Card className="h-full overflow-hidden transition-all hover:shadow-md">
-      <Link href={`/campagnes/${id}`} className="block">
-        <div className="relative aspect-video w-full overflow-hidden">
-          {coverImage ? (
-            <Image
-              src={coverImage}
-              alt={title}
-              fill
-              className="object-cover transition-transform hover:scale-105"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-muted">
-              <span className="text-muted-foreground">Aucune image</span>
+      <Link href={`/campagnes/${id}`} className="block no-underline">
+        <div className="relative">
+          <div className="aspect-[16/9] overflow-hidden rounded-t-lg">
+            {coverImage ? (
+              <Image
+                src={coverImage}
+                alt={title}
+                width={600}
+                height={340}
+                className="object-cover w-full h-full transition-transform hover:scale-105"
+              />
+            ) : (
+              <div className="w-full h-full bg-muted flex items-center justify-center">
+                <span className="text-muted-foreground">Image non disponible</span>
+              </div>
+            )}
+            <div className="absolute right-2 top-2">
+              <Badge variant={statusConfig[status].variant}>
+                {statusConfig[status].label}
+              </Badge>
             </div>
-          )}
-          <div className="absolute right-2 top-2">
-            <Badge variant={statusConfig[status].variant}>
-              {statusConfig[status].label}
-            </Badge>
           </div>
         </div>
 
