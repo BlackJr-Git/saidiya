@@ -58,7 +58,9 @@ interface CampagneCardSkeletonProps {
   variant?: "default" | "compact";
 }
 
-export const CampagneCardSkeleton = ({ variant = "default" }: CampagneCardSkeletonProps) => {
+export const CampagneCardSkeleton = ({
+  variant = "default",
+}: CampagneCardSkeletonProps) => {
   const isCompact = variant === "compact";
   const paddingClass = isCompact ? "p-4" : "p-6";
 
