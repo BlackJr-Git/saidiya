@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-// import { LoginButton } from "@/components/auth";
+// import { LoginButton } from "@/features/auth/components";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Logo } from "@/components/ui/logo";
 import { useState } from "react";
@@ -113,7 +113,6 @@ const MobileMenu = ({
         <div className="flex flex-col gap-4 py-4 border-b mb-4">
           <div className="flex items-center gap-2">
             {/* <LoginButton /> */}
-            
             <UserNav />
           </div>
           <div className="flex items-center justify-between">

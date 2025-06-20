@@ -25,7 +25,7 @@ export function AuthDialog({
   onAuthenticated,
   triggerClassName,
   redirectAfterAuth = true,
-  callbackUrl = "/dashboard",
+  callbackUrl = "/campagnes",
   open: controlledOpen,
   onOpenChange: setControlledOpen
 }: AuthDialogProps) {
@@ -58,7 +58,7 @@ export function AuthDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild className={triggerClassName}>
         {trigger || (
-          <Button variant="outline">
+          <Button variant="default" className="cursor-pointer">
             <LogIn className="mr-2 h-4 w-4" />
             Se connecter
           </Button>

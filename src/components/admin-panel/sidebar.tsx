@@ -33,7 +33,7 @@ export function Sidebar() {
           variant="link"
           asChild
         >
-          <Logo size="lg" href="/dashboard" showText={isOpen} />
+          <Logo size="lg" href="/" showText={isOpen} />
         </Button>
         <Menu isOpen={getOpenState()} />
       </div>

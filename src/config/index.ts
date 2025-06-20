@@ -46,7 +46,7 @@ export const siteConfig = {
     loginPath: "/login",
     signupPath: "/signup",
     forgotPasswordPath: "/forgot-password",
-    callbackUrl: "/dashboard",
+    // callbackUrl: "/dashboard",
     providers: ["credentials", "google", "facebook"],
   },
 

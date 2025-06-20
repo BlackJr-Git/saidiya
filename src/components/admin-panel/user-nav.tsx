@@ -23,14 +23,16 @@ import {
 import { useCurrentUser } from "@/features/user/hooks";
 import { signOut } from "@/features/auth/services";
 import { useRouter } from "next/navigation";
+import { LoginButton } from "@/features/auth/components";
 
 export function UserNav() {
   const { data: currentUser } = useCurrentUser();
   const router = useRouter();
 
   if (!currentUser) {
-    console.log("No current user", currentUser);
-    return null;
+    return (
+      <LoginButton size="sm" />
+    );
   }
 
   return (

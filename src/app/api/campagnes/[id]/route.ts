@@ -6,10 +6,10 @@ import { prisma } from "@/lib/shared/prisma";
 // GET /api/campagnes/[id] - Récupération d'une campagne par son ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const campaignId = params.id;
+    const { id: campaignId } = await params;
 
     // Récupérer la campagne avec les informations de base
     const campaign = await prisma.campaign.findUnique({
@@ -60,10 +60,10 @@ export async function GET(
 // PUT /api/campagnes/[id] - Mise à jour d'une campagne
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const campaignId = params.id;
+    const { id: campaignId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -154,10 +154,10 @@ export async function PUT(
 // DELETE /api/campagnes/[id] - Supprimer une campagne
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const campaignId = params.id;
+    const { id: campaignId } = await params;
     const session = await auth.api.getSession({
       headers: await headers(),
     });

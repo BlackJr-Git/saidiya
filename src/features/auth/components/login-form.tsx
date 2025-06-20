@@ -29,7 +29,7 @@ interface LoginFormProps extends React.ComponentProps<"form"> {
 export function LoginForm({
   className,
   redirectAfterLogin = true,
-  callbackURL = "/dashboard",
+  callbackURL = "/campagnes",
   onSuccess,
   ...props
 }: LoginFormProps) {

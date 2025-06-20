@@ -38,7 +38,7 @@ interface SignupFormProps extends React.ComponentProps<"form"> {
 export function SignupForm({
   className,
   redirectAfterSignup = true,
-  callbackURL = "/dashboard",
+  callbackURL = "/campagnes",
   onSuccess,
   ...props
 }: SignupFormProps) {
