@@ -191,14 +191,14 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
               <CardHeader className="pb-2">
                 <CardTitle className="text-xl">Objectif de financement</CardTitle>
                 <CardDescription>
-                  <div className="flex items-center justify-between mt-1">
+                  <p className="flex items-center justify-between mt-1">
                     <span className="font-semibold text-lg">
                       {formatCurrency(currentAmount)}
                     </span>
                     <span className="text-muted-foreground">
                       sur {formatCurrency(targetAmount)}
                     </span>
-                  </div>
+                  </p>
                 </CardDescription>
               </CardHeader>
               <CardContent>

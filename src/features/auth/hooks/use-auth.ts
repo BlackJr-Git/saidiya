@@ -28,7 +28,6 @@ export function useAuth(): UseAuthReturn {
       setIsLoading(true);
       try {
         const { data: session } = await authClient.getSession();
-        console.log("Session Data:", session);
         // Vérifier si la session existe et initialiser l'authentification
         if (session) {
           // Extraire les données utilisateur de différentes structures possibles
