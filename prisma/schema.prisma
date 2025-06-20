@@ -10,12 +10,26 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+}
+
+enum Status {
+  active
+  completed
+  draft
+  closed
+}
+
+enum Category {
+  education
+  environment
+  health
+  social
 }
 
 model User {
-  id            String    @id
+  id            String         @id
   name          String
   email         String
   emailVerified Boolean
@@ -24,6 +38,8 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  campaigns     Campaign[]
+  contributions Contribution[]
 
   @@unique([email])
   @@map("user")
@@ -72,4 +88,53 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Campaign {
+  id            String         @id @default(uuid())
+  title         String
+  description   String?
+  coverImage    String?
+  targetAmount  Float
+  currentAmount Float
+  categorie     Category
+  status        Status         @default(draft)
+  startDate     DateTime?
+  endDate       DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contributions Contribution[]
+
+  @@map("campaign")
+}
+
+model Contribution {
+  id          String      @id @default(uuid())
+  amount      Float
+  message     String?
+  anonymous   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  campaignId  String
+  campaign    Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  certificate Certificate?
+
+  @@map("contribution")
+}
+
+model Certificate {
+  id              String       @id @default(uuid())
+  certificateCode String       @unique
+  issueDate       DateTime     @default(now())
+  validUntil      DateTime?
+  status          String       @default("valid") // valid, revoked, expired
+  metadata        Json?        // Additional data like template info, signature details, etc.
+  contributionId  String       @unique
+  contribution    Contribution @relation(fields: [contributionId], references: [id], onDelete: Cascade)
+
+  @@map("certificate")
 }
