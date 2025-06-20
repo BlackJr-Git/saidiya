@@ -29,6 +29,7 @@ export function UserNav() {
   const router = useRouter();
 
   if (!currentUser) {
+    console.log("No current user", currentUser);
     return null;
   }
 

@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Form,
   FormControl,
@@ -278,6 +279,25 @@ export function CampagneCreateForm() {
                       type="text"
                       placeholder="Localisation"
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="endDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date de clôture</FormLabel>
+                  <FormControl>
+                    <DatePicker
+                      date={field.value}
+                      setDate={(date) => field.onChange(date)}
+                      placeholder="Choisir la date de clôture"
+                      fromDate={new Date()} // Date minimale = aujourd'hui
                     />
                   </FormControl>
                   <FormMessage />
