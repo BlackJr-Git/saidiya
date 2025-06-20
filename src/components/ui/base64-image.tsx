@@ -36,7 +36,6 @@ export function Base64Image({
 
   // Convertir la string base64 en src pour l'image
   const imgSrc = base64ToImgSrc(base64String, mimeType);
-  
   return (
     <Image
       src={imgSrc}

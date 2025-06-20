@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { 
@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { PublicCampagneInfo } from "@/types/campagne";
+import { Base64Image } from "@/components/ui/base64-image";
 
 // Fonction pour formater les montants en dollars
 const formatCurrency = (amount: number) => {
@@ -130,12 +131,19 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
         <div className="w-full lg:w-2/3 space-y-8">
           {/* Image de couverture */}
           <div className="relative h-72 md:h-96 w-full overflow-hidden rounded-lg">
-            <Image 
+            {/* <Image 
               src={typeof coverImage === 'string' ? coverImage : "/placeholder-campaign.jpg"} 
               alt={title || "Image de la campagne"}
               fill
               className="object-cover" 
               priority
+            /> */}
+            <Base64Image
+              base64String={coverImage || ""}
+              alt={title || "Image de la campagne"}
+              className="object-cover bg-red-500"
+              width={800}
+              height={450}
             />
             <div className="absolute right-4 top-4">
               <Badge variant={statusConfig[status].variant} className="text-sm font-medium px-3 py-1">

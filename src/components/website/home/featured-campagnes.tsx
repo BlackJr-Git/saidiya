@@ -7,13 +7,9 @@ import { CampagneGrid } from "@/features/campagne/components";
 import { useListCampagnes } from "@/features/campagne/hooks";
 import { PublicCampagneInfo } from "@/types/campagne";
 
-// Import des données factices pour le développement
-import mockData from "@/mocks/campagnes.json";
-
 export default function FeaturedCampagnes() {
   const [displayCount, setDisplayCount] = useState(3);
   const [featuredCampagnes, setFeaturedCampagnes] = useState<PublicCampagneInfo[]>([]);
-  const [useMockData, setUseMockData] = useState(false);
   
   // Récupérer les campagnes actives avec une limite
   const { data: campagnes = [], isLoading, isError } = useListCampagnes({
@@ -22,32 +18,12 @@ export default function FeaturedCampagnes() {
   });
 
   useEffect(() => {
-    // Éviter la boucle infinie - ne configurez les données fictives qu'une seule fois
-    if (!useMockData && (isError || isLoading)) {
-      console.log("Utilisation des données fictives pour les campagnes");
-      // Filtrer les campagnes actives uniquement et convertir les dates string en objets Date
-      const mockCampagnes = mockData.campagnes
-        .filter(c => c.status === "active")
-        .map(c => ({
-          ...c,
-          startDate: new Date(c.startDate),
-          endDate: new Date(c.endDate),
-          createdAt: new Date(c.createdAt),
-          // Assure que le statut est du bon type
-          status: c.status as "active" | "completed" | "draft" | "cancelled"
-        }));
-      
-      setFeaturedCampagnes(mockCampagnes.sort((a, b) => b.progress - a.progress) as PublicCampagneInfo[]);
-      setUseMockData(true);
-      return;
-    }
-    
-    // Si nous n'utilisons pas les données fictices et que nous avons des données réelles
-    if (!useMockData && campagnes.length > 0) {
+    // Si nous avons des données réelles, les trier et les utiliser
+    if (campagnes.length > 0) {
       const sorted = [...campagnes].sort((a, b) => b.progress - a.progress);
       setFeaturedCampagnes(sorted);
     }
-  }, [campagnes, isLoading, isError, useMockData]);
+  }, [campagnes]);
 
   const visibleCampagnes = featuredCampagnes.slice(0, displayCount);
   
@@ -68,14 +44,14 @@ export default function FeaturedCampagnes() {
 
         <CampagneGrid
           campagnes={visibleCampagnes}
-          isLoading={isLoading && !useMockData}
-          emptyMessage="Aucune campagne à afficher pour le moment"
+          isLoading={isLoading}
+          emptyMessage={isError ? "Impossible de charger les campagnes" : "Aucune campagne à afficher pour le moment"}
           columns={3}
         />
         
-        {useMockData && (
-          <div className="mt-4 text-xs text-muted-foreground text-center">
-            ⓘ Affichage de données fictives à des fins de développement
+        {isError && (
+          <div className="mt-4 text-sm text-destructive text-center">
+            Une erreur est survenue lors du chargement des campagnes. Veuillez réessayer plus tard.
           </div>
         )}
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-
+import { Base64Image } from "@/components/ui/base64-image";
 import { PublicCampagneInfo } from "@/types/campagne";
 
 // Fonction pour formater les montants en dollars
@@ -88,8 +88,15 @@ export const CampagneCard = ({ campagne, variant = "default" }: CampagneCardProp
         <div className="relative">
           <div className="aspect-[16/9] overflow-hidden rounded-t-lg">
             {coverImage ? (
-              <Image
-                src={coverImage}
+              // <Image
+              //   src={coverImage}
+              //   alt={title}
+              //   width={600}
+              //   height={340}
+              //   className="object-cover w-full h-full transition-transform hover:scale-105"
+              // />
+              <Base64Image
+                base64String={coverImage}
                 alt={title}
                 width={600}
                 height={340}

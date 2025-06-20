@@ -104,8 +104,8 @@ model Campaign {
   currentAmount Float
   category      Category
   status        Status         @default(draft)
-  startDate     DateTime       @default(now())
-  endDate       DateTime       @default(now())
+  startDate     DateTime?       @default(now())
+  endDate       DateTime?       @default(now())
   localisation  String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
