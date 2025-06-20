@@ -20,10 +20,19 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
+interface LoginFormProps extends React.ComponentProps<"form"> {
+  redirectAfterLogin?: boolean;
+  callbackURL?: string;
+  onSuccess?: () => void;
+}
+
 export function LoginForm({
   className,
+  redirectAfterLogin = true,
+  callbackURL = "/dashboard",
+  onSuccess,
   ...props
-}: React.ComponentProps<"form">) {
+}: LoginFormProps) {
   const router = useRouter();
   const {
     register,
@@ -43,7 +52,7 @@ export function LoginForm({
         {
           email: data.email,
           password: data.password,
-          callbackURL: "/dashboard",
+          callbackURL: callbackURL,
         },
         {
           onRequest: () => {
@@ -51,9 +60,15 @@ export function LoginForm({
             toast.loading("Connexion en cours...");
           },
           onSuccess: () => {
-            //redirect to the dashboard or sign in page
-            toast.success("Connexion reussie");
-            router.push("/dashboard");
+            //redirect to the dashboard
+            toast.success("Connexion réussie");
+            if (onSuccess) {
+              onSuccess();
+            }
+            if (redirectAfterLogin) {
+              router.push(callbackURL);
+              router.refresh();
+            }
           },
           onError: (ctx) => {
             // display the error message

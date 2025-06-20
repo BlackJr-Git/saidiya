@@ -29,10 +29,19 @@ const signupSchema = z
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
+interface SignupFormProps extends React.ComponentProps<"form"> {
+  redirectAfterSignup?: boolean;
+  callbackURL?: string;
+  onSuccess?: () => void;
+}
+
 export function SignupForm({
   className,
+  redirectAfterSignup = true,
+  callbackURL = "/dashboard",
+  onSuccess,
   ...props
-}: React.ComponentProps<"form">) {
+}: SignupFormProps) {
   const router = useRouter();
   const {
     register,
@@ -48,15 +57,15 @@ export function SignupForm({
     },
   });
 
-  const onSubmit = async (authData: SignupFormValues) => {
-    // Traiter l'inscription ici
+  const onSubmit = async (data: SignupFormValues) => {
     try {
+      // Créer le compte
       await authClient.signUp.email(
         {
-          email: authData.email,
-          password: authData.password,
-          name: authData.name,
-          callbackURL: "/dashboard",
+          email: data.email,
+          password: data.password,
+          name: data.name,
+          callbackURL: callbackURL,
         },
         {
           onRequest: () => {
@@ -64,13 +73,21 @@ export function SignupForm({
             toast.loading("Inscription en cours...");
           },
           onSuccess: () => {
-            //redirect to the dashboard or sign in page
-            toast.success("Inscription reussie");
-            router.push("/dashboard");
+            toast.success("Compte créé avec succès");
+            
+            // Appeler le callback si défini
+            if (onSuccess) {
+              onSuccess();
+            }
+            
+            // Rediriger si demandé
+            if (redirectAfterSignup) {
+              router.push(callbackURL);
+              router.refresh();
+            }
           },
           onError: (ctx) => {
-            // display the error message
-            console.log("Erreur de l'authentification:", ctx.error);
+            console.log("Erreur d'inscription:", ctx.error);
             toast.error(ctx.error.message);
           },
         }

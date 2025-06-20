@@ -6,6 +6,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Logo } from "@/components/ui/logo";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { UserNav } from "../admin-panel/user-nav";
 
 import {
   Sheet,
@@ -76,6 +77,7 @@ export default function Header() {
                   </Button>
                 </Link> */}
                 {/* <LoginButton /> */}
+                <UserNav />
                 <ModeToggle />
               </div>
             </div>
@@ -111,6 +113,8 @@ const MobileMenu = ({
         <div className="flex flex-col gap-4 py-4 border-b mb-4">
           <div className="flex items-center gap-2">
             {/* <LoginButton /> */}
+            
+            <UserNav />
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">Apparence</span>

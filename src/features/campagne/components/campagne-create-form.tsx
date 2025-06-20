@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { fileToBase64, fileToPreviewUrl } from "@/utils/file";
+import { useAuth } from "@/features/auth/hooks";
+import { AuthDialog } from "@/features/auth/components/auth-dialog";
 import * as z from "zod";
 import { Check, Loader2, ImageIcon } from "lucide-react";
 import Image from "next/image";
@@ -24,6 +26,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useCreateCampagne } from "@/features/campagne/hooks";
 import { CampagneCreate } from "@/types/campagne";
+import { useEffect } from "react";
 
 // Catégories disponibles avec leurs icônes
 const categories = [
@@ -48,45 +51,41 @@ const stepTips = {
     "Une bonne catégorisation permet aux utilisateurs de trouver votre campagne plus facilement",
   ],
   3: [
-    "Décrivez votre projet en détail : objectifs, impact attendu, utilisation des fonds",
-    "Soyez transparent et authentique pour instaurer la confiance",
-    "5000 caractères maximum pour garder votre description concise",
+    "Décrivez votre projet en détail, son objectif et son impact",
+    "Expliquez pourquoi votre projet mérite d'être financé",
+    "Soyez transparent sur l'utilisation des fonds",
   ],
   4: [
-    "Une image de qualité attire l'attention et favorise l'engagement",
-    "Choisissez une image en lien direct avec votre projet",
-    "Résolution recommandée : 1200x630 pixels",
+    "Choisissez une image attrayante qui représente bien votre projet",
+    "Une bonne image augmente considérablement l'attrait de votre campagne",
   ],
 };
 
 // Composant de conseils
-const TipSection = ({ tips }: { tips: string[] }) => {
+function TipSection({ tips }: { tips: string[] }) {
   return (
-    <div className="mt-6 bg-muted/50 rounded-lg p-4">
-      <h4 className="font-medium text-sm mb-2">Conseils</h4>
-      <ul className="space-y-1">
+    <div className="bg-muted/50 p-4 rounded-lg mt-6">
+      <h4 className="text-sm font-medium mb-2">Conseils:</h4>
+      <ul className="text-xs space-y-1 text-muted-foreground list-disc pl-4">
         {tips.map((tip, index) => (
-          <li key={index} className="text-xs text-muted-foreground flex items-start">
-            <span className="mr-2">•</span>
-            <span>{tip}</span>
-          </li>
+          <li key={index}>{tip}</li>
         ))}
       </ul>
     </div>
   );
-};
+}
 
 // Schéma de validation du formulaire
 const formSchema = z.object({
   title: z.string().min(10, "Le titre doit contenir au moins 10 caractères").max(100, "Le titre ne doit pas dépasser 100 caractères"),
   targetAmount: z.coerce.number().positive("Le montant cible doit être positif").min(100, "Le montant minimum est de 100"),
-  localisation: z.string().min(3, "Veuillez indiquer une localisation valide"),
+  localisation: z.string().min(2, "La localisation est requise"),
   category: z.string().min(1, "Veuillez sélectionner une catégorie"),
   description: z.string().min(50, "La description doit contenir au moins 50 caractères").max(5000, "La description ne doit pas dépasser 5000 caractères"),
-  coverImage: z.string().optional(),
+  coverImage: z.string().nullable().optional(),
+  status: z.enum(["draft", "active", "completed", "cancelled"]),
   startDate: z.date().nullable(),
   endDate: z.date().nullable(),
-  status: z.enum(["draft", "active", "completed", "cancelled"]),
 });
 
 // Type du formulaire basé sur le schéma
@@ -98,29 +97,42 @@ export function CampagneCreateForm() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  
+  // Vérifier si l'utilisateur est authentifié
+  const { isAuthenticated, isLoading, user } = useAuth();
+  
+  // Log pour débogage
+  useEffect(() => {
+    console.log("Auth state:", { isAuthenticated, isLoading, user, showAuthDialog });
+  }, [isAuthenticated, isLoading, user, showAuthDialog]);
 
   // Utiliser le hook de création de campagne
   const createCampagneMutation = useCreateCampagne();
 
-  // Initialisation du formulaire avec le schéma de validation
+  // Initialiser le formulaire avec les valeurs par défaut
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      targetAmount: 100,
+      targetAmount: undefined,
       localisation: "",
       category: "",
       description: "",
-      coverImage: undefined,
+      coverImage: null,
+      status: "draft",
       startDate: null,
       endDate: null,
-      status: "draft",
     },
   });
 
+  // Navigation entre les étapes
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 4));
+  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+
   // Gestionnaire de changement d'image
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       try {
         // Convertir le fichier en base64 pour l'API
@@ -136,10 +148,6 @@ export function CampagneCreateForm() {
       }
     }
   };
-
-  // Navigation entre les étapes
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 4));
-  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   // Validation de l'étape actuelle avant de passer à la suivante
   const validateCurrentStep = async () => {
@@ -166,8 +174,30 @@ export function CampagneCreateForm() {
     if (result) nextStep();
   };
 
+  // Gestionnaire d'authentification réussie
+  const handleAuthenticated = () => {
+    console.log("Authentication successful");
+    // Fermer explicitement le dialogue
+    setShowAuthDialog(false);
+    // Attendre un peu pour que l'état d'authentification soit mis à jour
+    setTimeout(() => {
+      console.log("Submitting form after auth");
+      form.handleSubmit(onSubmit)();
+    }, 500);
+  };
+
   // Gestionnaire de soumission du formulaire
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    // Vérifier si l'utilisateur est authentifié avant de soumettre
+    if (!isAuthenticated) {
+      console.log("User is not authenticated, showing auth dialog");
+      setShowAuthDialog(true);
+      console.log("showAuthDialog set to:", true);
+      return;
+    }
+    
+    console.log("User is authenticated, proceeding with submission");
+
     setIsSubmitting(true);
     try {
       // Convertir les données du formulaire au format attendu par l'API
@@ -178,8 +208,8 @@ export function CampagneCreateForm() {
         category: data.category,
         description: data.description,
         coverImage: data.coverImage || null, // Déjà en base64 depuis handleImageChange
-        startDate: data.startDate, // Date | null est maintenant compatible
-        endDate: data.endDate,     // Date | null est maintenant compatible
+        startDate: data.startDate || null, // Garantir Date | null
+        endDate: data.endDate || null,     // Garantir Date | null
         status: data.status || "draft", // Garantir une valeur pour le statut
       };
 
@@ -382,71 +412,87 @@ export function CampagneCreateForm() {
             </div>
           </>
         );
+      
+      default:
+        return null;
     }
   };
 
   return (
-    <Card className="w-full max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl">Créer une campagne</CardTitle>
-        <div className="flex items-center justify-between mt-2">
-          {[1, 2, 3, 4].map((s) => (
-            <div
-              key={s}
-              className={`flex-1 h-2 mx-1 rounded-full ${
-                s < step
-                  ? "bg-primary"
-                  : s === step
-                  ? "bg-primary/70"
-                  : "bg-muted"
-              }`}
-            />
-          ))}
-        </div>
-        <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
-          <span className={step === 1 ? "text-primary font-medium" : ""}>
-            Informations
-          </span>
-          <span className={step === 2 ? "text-primary font-medium" : ""}>
-            Catégorie
-          </span>
-          <span className={step === 3 ? "text-primary font-medium" : ""}>
-            Description
-          </span>
-          <span className={step === 4 ? "text-primary font-medium" : ""}>
-            Image
-          </span>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form className="space-y-6">{renderStep()}</form>
-        </Form>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={prevStep}
-          disabled={step === 1 || isSubmitting}
-        >
-          Précédent
-        </Button>
-        <Button onClick={validateCurrentStep} disabled={isSubmitting}>
-          {isSubmitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Chargement...
-            </>
-          ) : step < 4 ? (
-            "Suivant"
-          ) : (
-            <>
-              <Check className="mr-2 h-4 w-4" />
-              Créer la campagne
-            </>
-          )}
-        </Button>
-      </CardFooter>
-    </Card>
+    <>
+      {/* Dialogue d'authentification */}
+      <AuthDialog 
+        trigger={<span style={{ display: 'none' }} />}
+        open={showAuthDialog}
+        onOpenChange={setShowAuthDialog}
+        onAuthenticated={handleAuthenticated}
+        redirectAfterAuth={false}
+        callbackUrl="" // Laisser vide pour éviter toute redirection
+        defaultTab="login"
+      />
+      
+      <Card className="w-full max-w-3xl mx-auto">
+        <CardHeader>
+          <CardTitle className="text-2xl">Créer une campagne</CardTitle>
+          <div className="flex items-center justify-between mt-2">
+            {[1, 2, 3, 4].map((s) => (
+              <div
+                key={s}
+                className={`flex-1 h-2 mx-1 rounded-full ${
+                  s < step
+                    ? "bg-primary"
+                    : s === step
+                    ? "bg-primary/70"
+                    : "bg-muted"
+                }`}
+              />
+            ))}
+          </div>
+          <div className="flex items-center justify-between text-xs text-muted-foreground mt-1">
+            <span className={step === 1 ? "text-primary font-medium" : ""}>
+              Informations
+            </span>
+            <span className={step === 2 ? "text-primary font-medium" : ""}>
+              Catégorie
+            </span>
+            <span className={step === 3 ? "text-primary font-medium" : ""}>
+              Description
+            </span>
+            <span className={step === 4 ? "text-primary font-medium" : ""}>
+              Image
+            </span>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form className="space-y-6">{renderStep()}</form>
+          </Form>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button
+            variant="outline"
+            onClick={prevStep}
+            disabled={step === 1 || isSubmitting}
+          >
+            Précédent
+          </Button>
+          <Button onClick={validateCurrentStep} disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Chargement...
+              </>
+            ) : step < 4 ? (
+              "Suivant"
+            ) : (
+              <>
+                <Check className="mr-2 h-4 w-4" />
+                Créer la campagne
+              </>
+            )}
+          </Button>
+        </CardFooter>
+      </Card>
+    </>
   );
 }
