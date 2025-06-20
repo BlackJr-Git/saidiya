@@ -108,7 +108,7 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
     progress,
     status,
     localisation,
-    categorie,
+    category,
     createdAt
   } = campagne;
   
@@ -170,7 +170,7 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
               </div>
               <div className="p-4 bg-muted rounded-lg">
                 <dt className="text-sm font-medium text-muted-foreground mb-1">Catégorie</dt>
-                <dd className="text-base">{categorie}</dd>
+                <dd className="text-base">{category}</dd>
               </div>
               <div className="p-4 bg-muted rounded-lg">
                 <dt className="text-sm font-medium text-muted-foreground mb-1">Porteur de projet</dt>

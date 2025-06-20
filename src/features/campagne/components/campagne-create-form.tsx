@@ -1,32 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Check,
-  Image as ImageIcon,
-  Loader2,
-  AlertTriangle,
-  GraduationCap,
-  Leaf,
-  Heart,
-  Handshake,
-  Palette,
-  Lightbulb,
-  Building,
-} from "lucide-react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { fileToBase64, fileToPreviewUrl } from "@/utils/file";
+import * as z from "zod";
+import { Check, Loader2, ImageIcon } from "lucide-react";
+import Image from "next/image";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -35,156 +21,170 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-// Imports de select supprimés car remplacés par des cartes
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
+import { useCreateCampagne } from "@/features/campagne/hooks";
+import { CampagneCreate } from "@/types/campagne";
 
-// Schéma de validation pour tout le formulaire
-const formSchema = z.object({
-  title: z
-    .string()
-    .min(5, { message: "Le titre doit contenir au moins 5 caractères" })
-    .max(100, { message: "Le titre ne doit pas dépasser 100 caractères" }),
-  targetAmount: z.coerce
-    .number()
-    .min(100, { message: "Le montant minimum est de 100 $" })
-    .max(1000000, { message: "Le montant maximum est de 1 000 000 $" }),
-  category: z
-    .string()
-    .min(1, { message: "Veuillez sélectionner une catégorie" }),
-  description: z
-    .string()
-    .min(100, {
-      message: "La description doit contenir au moins 100 caractères",
-    })
-    .max(5000, {
-      message: "La description ne doit pas dépasser 5 000 caractères",
-    }),
-  coverImage: z.instanceof(File).optional(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
-// Liste des catégories disponibles avec icônes
+// Catégories disponibles avec leurs icônes
 const categories = [
-  { id: "education", label: "Éducation", icon: GraduationCap },
-  { id: "environment", label: "Environnement", icon: Leaf },
-  { id: "health", label: "Santé", icon: Heart },
-  { id: "social", label: "Action sociale", icon: Handshake },
-  { id: "culture", label: "Culture & Arts", icon: Palette },
-  { id: "tech", label: "Innovation & Technologie", icon: Lightbulb },
-  { id: "community", label: "Développement local", icon: Building },
+  { id: "education", label: "Éducation", icon: ImageIcon },
+  { id: "health", label: "Santé", icon: ImageIcon },
+  { id: "environment", label: "Environnement", icon: ImageIcon },
+  { id: "culture", label: "Culture", icon: ImageIcon },
+  { id: "tech", label: "Technologie", icon: ImageIcon },
+  { id: "community", label: "Communauté", icon: ImageIcon },
+  { id: "other", label: "Autre", icon: ImageIcon },
 ];
 
-// Composant pour afficher les conseils
-function TipSection({ tips }: { tips: string[] }) {
+// Conseils pour chaque étape du formulaire
+const stepTips = {
+  1: [
+    "Choisissez un titre accrocheur qui décrit clairement votre projet",
+    "Le montant cible doit être réaliste et justifiable",
+    "Une localisation précise aide à attirer les soutiens locaux",
+  ],
+  2: [
+    "Sélectionnez la catégorie qui correspond le mieux à votre projet",
+    "Une bonne catégorisation permet aux utilisateurs de trouver votre campagne plus facilement",
+  ],
+  3: [
+    "Décrivez votre projet en détail : objectifs, impact attendu, utilisation des fonds",
+    "Soyez transparent et authentique pour instaurer la confiance",
+    "5000 caractères maximum pour garder votre description concise",
+  ],
+  4: [
+    "Une image de qualité attire l'attention et favorise l'engagement",
+    "Choisissez une image en lien direct avec votre projet",
+    "Résolution recommandée : 1200x630 pixels",
+  ],
+};
+
+// Composant de conseils
+const TipSection = ({ tips }: { tips: string[] }) => {
   return (
-    <div className="bg-muted/50 p-4 rounded-lg border">
-      <div className="flex items-center gap-2 mb-2">
-        <AlertTriangle size={16} className="text-muted-foreground" />
-        <h3 className="text-sm font-medium">Conseils</h3>
-      </div>
+    <div className="mt-6 bg-muted/50 rounded-lg p-4">
+      <h4 className="font-medium text-sm mb-2">Conseils</h4>
       <ul className="space-y-1">
         {tips.map((tip, index) => (
-          <li
-            key={index}
-            className="text-xs text-muted-foreground flex gap-2 items-start"
-          >
-            <span className="text-muted-foreground mt-0.5">•</span>
+          <li key={index} className="text-xs text-muted-foreground flex items-start">
+            <span className="mr-2">•</span>
             <span>{tip}</span>
           </li>
         ))}
       </ul>
     </div>
   );
-}
+};
 
+// Schéma de validation du formulaire
+const formSchema = z.object({
+  title: z.string().min(10, "Le titre doit contenir au moins 10 caractères").max(100, "Le titre ne doit pas dépasser 100 caractères"),
+  targetAmount: z.coerce.number().positive("Le montant cible doit être positif").min(100, "Le montant minimum est de 100"),
+  localisation: z.string().min(3, "Veuillez indiquer une localisation valide"),
+  category: z.string().min(1, "Veuillez sélectionner une catégorie"),
+  description: z.string().min(50, "La description doit contenir au moins 50 caractères").max(5000, "La description ne doit pas dépasser 5000 caractères"),
+  coverImage: z.string().optional(),
+  startDate: z.date().nullable(),
+  endDate: z.date().nullable(),
+  status: z.enum(["draft", "active", "completed", "cancelled"]),
+});
+
+// Type du formulaire basé sur le schéma
+type FormValues = z.infer<typeof formSchema>;
+
+// Composant principal du formulaire
 export function CampagneCreateForm() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  // Définir les conseils pour chaque étape
-  const stepTips = {
-    1: [
-      "Choisissez un titre clair et accrocheur qui résume votre projet.",
-      "Définissez un objectif financier réaliste et justifiable.",
-    //   "Pensez à inclure une marge pour les frais de gestion (environ 5%).",
-    ],
-    2: [
-      "Sélectionnez la catégorie qui correspond le mieux à l'objectif principal de votre projet.",
-      "La catégorie aide les donateurs potentiels à trouver votre campagne.",
-      "Elle influence également l'algorithme de mise en avant des campagnes.",
-    ],
-    3: [
-      "Expliquez clairement pourquoi votre projet est important.",
-      "Détaillez comment les fonds seront utilisés.",
-      "Partagez votre histoire personnelle et votre motivation.",
-      "Incluez des informations sur votre équipe si pertinent.",
-    ],
-    4: [
-      "Utilisez une image de haute qualité au format 16:9.",
-      "Choisissez une image percutante qui illustre votre projet.",
-      "Évitez les textes dans l'image principale.",
-      "Assurez-vous d'avoir le droit d'utiliser cette image.",
-    ],
-  };
+  // Utiliser le hook de création de campagne
+  const createCampagneMutation = useCreateCampagne();
 
-  // Form initialization with react-hook-form
+  // Initialisation du formulaire avec le schéma de validation
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      targetAmount: undefined,
+      targetAmount: 100,
+      localisation: "",
       category: "",
       description: "",
       coverImage: undefined,
+      startDate: null,
+      endDate: null,
+      status: "draft",
     },
-    mode: "onChange",
   });
 
-  // Gestionnaire de changement d'étape
-  const nextStep = () => {
-    if (step < 4) {
-      setStep(step + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    }
-  };
-
-  // Gestionnaire de sélection d'image
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  // Gestionnaire de changement d'image
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
-      form.setValue("coverImage", file);
-
-      // Créer un aperçu de l'image
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Convertir le fichier en base64 pour l'API
+        const base64Data = await fileToBase64(file);
+        
+        // Mettre à jour le champ coverImage dans le formulaire avec la string base64
+        form.setValue("coverImage", base64Data);
+        
+        // Créer une URL pour la prévisualisation uniquement
+        setImagePreview(fileToPreviewUrl(file));
+      } catch (error) {
+        console.error("Erreur lors de la conversion de l'image:", error);
+      }
     }
+  };
+
+  // Navigation entre les étapes
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 4));
+  const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
+
+  // Validation de l'étape actuelle avant de passer à la suivante
+  const validateCurrentStep = async () => {
+    let fieldsToValidate: (keyof FormValues)[] = [];
+
+    switch (step) {
+      case 1:
+        fieldsToValidate = ["title", "targetAmount", "localisation"];
+        break;
+      case 2:
+        fieldsToValidate = ["category"];
+        break;
+      case 3:
+        fieldsToValidate = ["description"];
+        break;
+      case 4:
+        // Dernière étape : soumettre le formulaire
+        await form.handleSubmit(onSubmit)();
+        return;
+    }
+
+    // Valider uniquement les champs de l'étape actuelle
+    const result = await form.trigger(fieldsToValidate);
+    if (result) nextStep();
   };
 
   // Gestionnaire de soumission du formulaire
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      console.log("Données de campagne soumises:", data);
+      // Convertir les données du formulaire au format attendu par l'API
+      const campaignData: CampagneCreate = {
+        title: data.title,
+        targetAmount: data.targetAmount,
+        localisation: data.localisation,
+        category: data.category,
+        description: data.description,
+        coverImage: data.coverImage || null, // Déjà en base64 depuis handleImageChange
+        startDate: data.startDate, // Date | null est maintenant compatible
+        endDate: data.endDate,     // Date | null est maintenant compatible
+        status: data.status || "draft", // Garantir une valeur pour le statut
+      };
 
-      // TODO: Appeler l'API pour créer une nouvelle campagne
-      // const response = await createCampagne(data);
-
-      // Simulation d'une requête API
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Appeler la mutation pour créer la campagne
+      await createCampagneMutation.mutateAsync(campaignData);
 
       // Rediriger vers la page de succès ou la campagne créée
       router.push("/campagnes");
@@ -195,36 +195,7 @@ export function CampagneCreateForm() {
     }
   };
 
-  // Vérifier si l'étape courante est valide
-  const validateCurrentStep = async () => {
-    let isValid = false;
-
-    switch (step) {
-      case 1:
-        isValid = await form.trigger(["title", "targetAmount"]);
-        break;
-      case 2:
-        isValid = await form.trigger(["category"]);
-        break;
-      case 3:
-        isValid = await form.trigger(["description"]);
-        break;
-      case 4:
-        // L'image est optionnelle, donc cette étape est valide par défaut
-        isValid = true;
-        break;
-    }
-
-    if (isValid) {
-      if (step < 4) {
-        nextStep();
-      } else {
-        form.handleSubmit(onSubmit)();
-      }
-    }
-  };
-
-  // Rendu conditionnel des étapes du formulaire
+  // Rendu de l'étape actuelle
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -235,10 +206,11 @@ export function CampagneCreateForm() {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom de la campagne</FormLabel>
+                  <FormLabel>Titre de la campagne</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Ex: Rénovation de l'école primaire Victor Hugo"
+                      type="text"
+                      placeholder="Titre de la campagne"
                       {...field}
                     />
                   </FormControl>
@@ -252,15 +224,30 @@ export function CampagneCreateForm() {
               name="targetAmount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Objectif de financement ($)</FormLabel>
+                  <FormLabel>Montant cible</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="10000"
+                      placeholder="Montant cible"
                       {...field}
-                      onChange={(e) =>
-                        field.onChange(e.target.valueAsNumber || "")
-                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="localisation"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Localisation</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Localisation"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

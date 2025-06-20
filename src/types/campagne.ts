@@ -11,7 +11,7 @@ export interface Campagne {
   targetAmount: number;
   currentAmount: number;
   localisation: string;
-  categorie: string;
+  category: string;
   startDate: Date;
   endDate: Date;
   status: "draft" | "active" | "completed" | "cancelled";
@@ -30,7 +30,7 @@ export interface PublicCampagneInfo {
   currentAmount: number;
   progress: number; // pourcentage de progression
   localisation: string;
-  categorie: string;
+  category: string;
   startDate: Date;
   endDate: Date;
   status: "draft" | "active" | "completed" | "cancelled";
@@ -67,7 +67,8 @@ export interface CampagneCreate {
   coverImage?: string | null;
   targetAmount: number;
   localisation: string;
-  categorie: string;
-  startDate: Date;
-  endDate: Date;
+  category: string;
+  startDate: Date | null;
+  endDate: Date | null;
+  status: "draft" | "active" | "completed" | "cancelled";
 }

@@ -5,11 +5,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getCampagneById,
-  getCurrentCampagne,
+  // getCurrentCampagne,
   updateCampagneProfile,
   createCampagne,
   listCampagnes,
-  checkCampagneStatus,
+  getUserCampagnes,
+  // checkCampagneStatus,
 } from "@/features/campagne/services";
 import { CampagneCreate, CampagneProfileUpdate } from "@/types/campagne";
 
@@ -20,24 +21,25 @@ export const campagneKeys = {
   campagne: (id: string) => [...campagneKeys.all, id] as const,
   campagneStatus: () => [...campagneKeys.all, "campagne-status"] as const,
   list: () => [...campagneKeys.all, "list"] as const,
+  userCampagnes: () => [...campagneKeys.all, "user-campagnes"] as const,
 };
 
 /**
  * Hook pour récupérer la campagne actuelle
  */
-export const useCurrentCampagne = () => {
-  return useQuery({
-    queryKey: campagneKeys.currentCampagne(),
-    queryFn: getCurrentCampagne,
-    retry: (failureCount, error) => {
-      // Ne pas réessayer si l'erreur est 404 (non trouvé)
-      if (error instanceof Error && error.message.includes("404")) {
-        return false;
-      }
-      return failureCount < 2;
-    },
-  });
-};
+// export const useCurrentCampagne = () => {
+//   return useQuery({
+//     queryKey: campagneKeys.currentCampagne(),
+//     queryFn: getCurrentCampagne,
+//     retry: (failureCount, error) => {
+//       // Ne pas réessayer si l'erreur est 404 (non trouvé)
+//       if (error instanceof Error && error.message.includes("404")) {
+//         return false;
+//       }
+//       return failureCount < 2;
+//     },
+//   });
+// };
 
 /**
  * Hook pour récupérer une campagne par son ID
@@ -53,13 +55,13 @@ export const useCampagneById = (id: string) => {
 /**
  * Hook pour vérifier le statut de la campagne
  */
-export const useCampagneStatus = () => {
-  return useQuery({
-    queryKey: campagneKeys.campagneStatus(),
-    queryFn: checkCampagneStatus,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
-};
+// export const useCampagneStatus = () => {
+//   return useQuery({
+//     queryKey: campagneKeys.campagneStatus(),
+//     queryFn: checkCampagneStatus,
+//     staleTime: 5 * 60 * 1000, // 5 minutes
+//   });
+// };
 
 /**
  * Hook pour mettre à jour le profil de la campagne
@@ -68,14 +70,15 @@ export const useUpdateCampagneProfile = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (profileData: CampagneProfileUpdate) =>
-      updateCampagneProfile(profileData),
+    mutationFn: ({ id, profileData }: { id: string; profileData: CampagneProfileUpdate }) =>
+      updateCampagneProfile(id, profileData),
     onSuccess: (data) => {
       // Mettre à jour le cache campagne après une mise à jour réussie
-      queryClient.setQueryData(campagneKeys.currentCampagne(), data);
+      queryClient.setQueryData(campagneKeys.campagne(data.id), data);
 
-      // Invalider la requête campagne pour forcer un rafraîchissement si nécessaire
-      queryClient.invalidateQueries({ queryKey: campagneKeys.currentCampagne() });
+      // Invalider les requêtes potentiellement impactées
+      queryClient.invalidateQueries({ queryKey: campagneKeys.list() });
+      queryClient.invalidateQueries({ queryKey: campagneKeys.userCampagnes() });
     },
   });
 };
@@ -89,9 +92,20 @@ export const useCreateCampagne = () => {
   return useMutation({
     mutationFn: (campaignData: CampagneCreate) => createCampagne(campaignData),
     onSuccess: () => {
-      // Invalider la liste des campagnes pour forcer un rafraîchissement
+      // Invalider les listes des campagnes pour forcer un rafraîchissement
       queryClient.invalidateQueries({ queryKey: campagneKeys.list() });
+      queryClient.invalidateQueries({ queryKey: campagneKeys.userCampagnes() });
     },
+  });
+};
+
+/**
+ * Hook pour récupérer les campagnes de l'utilisateur connecté
+ */
+export const useUserCampagnes = () => {
+  return useQuery({
+    queryKey: campagneKeys.userCampagnes(),
+    queryFn: getUserCampagnes,
   });
 };
 

@@ -13,18 +13,17 @@ import {
 import { api } from "@/lib/shared/api";
 
 /**
- * Récupère le profil de la campagne actuellement sélectionnée
- * Nécessite d'être connecté
+ * Récupère les campagnes de l'utilisateur connecté
  */
-export const getCurrentCampagne = async (): Promise<PrivateCampagneInfo> => {
+export const getUserCampagnes = async (): Promise<PrivateCampagneInfo[]> => {
   try {
-    const response = await api().get<PrivateCampagneInfo>("/campagne/current");
+    const response = await api().get<PrivateCampagneInfo[]>("/campagnes/user");
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         error.response?.data?.error ||
-          "Erreur lors de la récupération du profil de campagne"
+          "Erreur lors de la récupération des campagnes de l'utilisateur"
       );
     }
     throw error;
@@ -32,14 +31,34 @@ export const getCurrentCampagne = async (): Promise<PrivateCampagneInfo> => {
 };
 
 /**
+ * Récupère le profil de la campagne actuellement sélectionnée
+ * Nécessite d'être connecté
+ */
+// export const getCurrentCampagne = async (): Promise<PrivateCampagneInfo> => {
+//   try {
+//     const response = await api().get<PrivateCampagneInfo>("/campagne/current");
+//     return response.data;
+//   } catch (error) {
+//     if (axios.isAxiosError(error)) {
+//       throw new Error(
+//         error.response?.data?.error ||
+//           "Erreur lors de la récupération du profil de campagne"
+//       );
+//     }
+//     throw error;
+//   }
+// };
+
+/**
  * Met à jour le profil de la campagne sélectionnée
  * @param profileData - Données du profil à mettre à jour
  */
 export const updateCampagneProfile = async (
+  id: string,
   profileData: CampagneProfileUpdate
 ): Promise<PrivateCampagneInfo> => {
   try {
-    const response = await api().put<PrivateCampagneInfo>("/campagne", profileData);
+    const response = await api().put<PrivateCampagneInfo>(`/campagnes/${id}`, profileData);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -57,7 +76,7 @@ export const updateCampagneProfile = async (
  */
 export const getCampagneById = async (campagneId: string): Promise<PublicCampagneInfo> => {
   try {
-    const response = await api().get<PublicCampagneInfo>(`/campagne/${campagneId}`);
+    const response = await api().get<PublicCampagneInfo>(`/campagnes/${campagneId}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -77,19 +96,19 @@ export const getCampagneById = async (campagneId: string): Promise<PublicCampagn
  * Vérifie le statut de la campagne actuelle
  * Renvoie les données de campagne si disponible, sinon null
  */
-export const checkCampagneStatus = async (): Promise<PrivateCampagneInfo | null> => {
-  try {
-    const campagne = await getCurrentCampagne();
-    return campagne;
-  } catch (error) {
-    // Si l'erreur est 404 (non trouvé), la campagne n'est simplement pas disponible
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      return null;
-    }
-    // Pour les autres erreurs, les propager
-    throw error;
-  }
-};
+// export const checkCampagneStatus = async (): Promise<PrivateCampagneInfo | null> => {
+//   try {
+//     const campagne = await getCurrentCampagne();
+//     return campagne;
+//   } catch (error) {
+//     // Si l'erreur est 404 (non trouvé), la campagne n'est simplement pas disponible
+//     if (axios.isAxiosError(error) && error.response?.status === 404) {
+//       return null;
+//     }
+//     // Pour les autres erreurs, les propager
+//     throw error;
+//   }
+// };
 
 /**
  * Crée une nouvelle campagne
@@ -99,7 +118,7 @@ export const createCampagne = async (
   campaignData: CampagneCreate
 ): Promise<PrivateCampagneInfo> => {
   try {
-    const response = await api().post<PrivateCampagneInfo>("/campagne", campaignData);
+    const response = await api().post<PrivateCampagneInfo>("/campagnes", campaignData);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

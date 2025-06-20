@@ -12,8 +12,8 @@ export async function GET() {
   try {
     // Vérifier l'authentification de l'utilisateur
     const session = await auth.api.getSession({
-      headers: await headers()
-  })
+      headers: await headers(),
+    });
 
     // Si l'utilisateur n'est pas authentifié, retourner une erreur
     if (!session || !session.user || !session.user.id) {
@@ -64,8 +64,8 @@ export async function PUT(request: NextRequest) {
   try {
     // Vérifier l'authentification de l'utilisateur
     const session = await auth.api.getSession({
-      headers: await headers()
-  })
+      headers: await headers(),
+    });
 
     // Si l'utilisateur n'est pas authentifié, retourner une erreur
     if (!session || !session.user || !session.user.id) {
@@ -77,7 +77,7 @@ export async function PUT(request: NextRequest) {
 
     // Récupérer les données de la requête
     const data = await request.json();
-    
+
     // Valider les données reçues
     if (!data) {
       return NextResponse.json(
@@ -88,11 +88,11 @@ export async function PUT(request: NextRequest) {
 
     // Préparer les données à mettre à jour (uniquement les champs autorisés)
     const updateData: UserProfileUpdate = {};
-    
+
     // Les champs que l'utilisateur peut modifier
     if (data.name !== undefined) updateData.name = data.name;
     if (data.image !== undefined) updateData.image = data.image;
-    
+
     // L'email nécessite une vérification spéciale et ne peut pas être modifié directement
     // car il faudrait réinitialiser emailVerified, envoyer un email de vérification, etc.
 

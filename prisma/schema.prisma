@@ -26,7 +26,12 @@ enum Category {
   environment
   health
   social
+  culture
+  tech
+  community
+  other
 }
+
 
 model User {
   id            String         @id
@@ -97,10 +102,11 @@ model Campaign {
   coverImage    String?
   targetAmount  Float
   currentAmount Float
-  categorie     Category
+  category      Category
   status        Status         @default(draft)
   startDate     DateTime?
   endDate       DateTime?
+  localisation  String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   userId        String
