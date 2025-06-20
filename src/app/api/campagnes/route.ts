@@ -112,8 +112,8 @@ export async function POST(request: NextRequest) {
         currentAmount: 0, // Commence à zéro
         category: body.category,
         status: body.status || "draft",
-        startDate: body.startDate ? new Date(body.startDate) : null,
-        endDate: body.endDate ? new Date(body.endDate) : null,
+        startDate: body.startDate ? new Date(body.startDate) : undefined,
+        endDate: body.endDate ? new Date(body.endDate) : undefined,
         localisation: body.localisation,
         userId: userId,
       }
