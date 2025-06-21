@@ -1,14 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/shared/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/shared/prisma";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 // GET /api/contributions?campaignId=xyz
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const campaignId = searchParams.get('campaignId');
+  const campaignId = searchParams.get("campaignId");
 
   if (!campaignId) {
     return NextResponse.json(
-      { message: 'Campaign ID is required' },
+      { message: "Campaign ID is required" },
       { status: 400 }
     );
   }
@@ -20,7 +22,7 @@ export async function GET(request: NextRequest) {
         campaignId: campaignId,
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
@@ -36,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     // Count number of contributors
     const uniqueContributors = await prisma.contribution.groupBy({
-      by: ['userId'],
+      by: ["userId"],
       where: {
         campaignId: campaignId,
       },
@@ -50,9 +52,9 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error('Failed to fetch contributions:', error);
+    console.error("Failed to fetch contributions:", error);
     return NextResponse.json(
-      { message: 'Failed to fetch contributions' },
+      { message: "Failed to fetch contributions" },
       { status: 500 }
     );
   }
@@ -67,34 +69,73 @@ export async function POST(request: NextRequest) {
     const { amount, campaignId } = body;
     if (!amount || !campaignId) {
       return NextResponse.json(
-        { message: 'Amount and campaignId are required' },
+        { message: "Amount and campaignId are required" },
         { status: 400 }
       );
     }
 
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    // Vérifier si l'utilisateur est authentifié
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: "Vous devez être connecté pour créer une contribution" },
+        { status: 401 }
+      );
+    }
+
     // Create the contribution
-    // Note: In a real app, userId would come from an auth token
-    // For now, we'll use a placeholder or anonymous contribution
-    const contribution = await prisma.contribution.create({
-      data: {
-        amount: body.amount,
-        message: body.message || '',
-        anonymous: body.anonymous || false,
-        campaign: {
-          connect: {
+    // Utilisation d'une transaction pour créer la contribution et mettre à jour le montant de la campagne
+    // Augmenter le timeout à 10 secondes (10000ms) pour éviter l'expiration
+    const contribution = await prisma.$transaction(
+      async (tx) => {
+        // 1. Créer la contribution
+        const newContribution = await tx.contribution.create({
+          data: {
+            amount: body.amount,
+            message: body.message || "",
+            anonymous: body.anonymous || false,
+            campaign: {
+              connect: {
+                id: campaignId,
+              },
+            },
+            // Lier à l'utilisateur si authentifié
+            user: {
+              connect: {
+                id: session.user.id,
+              },
+            },
+          },
+        });
+
+        // 2. Mettre à jour le montant actuel de la campagne
+        await tx.campaign.update({
+          where: {
             id: campaignId,
           },
-        },
-        // If authenticated, you would add user connection:
-        // user: { connect: { id: userId } },
+          data: {
+            currentAmount: {
+              increment: body.amount,
+            },
+          },
+        });
+
+        return newContribution;
       },
-    });
+      {
+        timeout: 10000, // Augmenter le timeout à 10 secondes (10000ms)
+        maxWait: 5000, // 5 secondes max d'attente pour acquérir une connexion
+      }
+    );
 
     return NextResponse.json(contribution, { status: 201 });
   } catch (error) {
-    console.error('Failed to create contribution:', error);
+    console.error("Failed to create contribution:", error);
     return NextResponse.json(
-      { message: 'Failed to create contribution' },
+      { message: "Failed to create contribution" },
       { status: 500 }
     );
   }

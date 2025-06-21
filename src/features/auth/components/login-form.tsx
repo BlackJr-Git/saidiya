@@ -57,7 +57,7 @@ export function LoginForm({
         {
           onRequest: () => {
             //show loading
-            toast.loading("Connexion en cours...");
+            // toast.loading("Connexion en cours...");
           },
           onSuccess: () => {
             //redirect to the dashboard

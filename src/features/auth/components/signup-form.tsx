@@ -70,7 +70,7 @@ export function SignupForm({
         {
           onRequest: () => {
             //show loading
-            toast.loading("Inscription en cours...");
+            // toast.loading("Inscription en cours...");
           },
           onSuccess: () => {
             toast.success("Compte créé avec succès");

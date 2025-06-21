@@ -12,8 +12,12 @@ export function useCreateContribution() {
     mutationFn: (data: ContributionCreate) => createContribution(data),
     onSuccess: (_, variables) => {
       // Invalider les requêtes pour forcer un rafraîchissement des données
-      queryClient.invalidateQueries({ queryKey: ["contributions", variables.campaignId] });
-      queryClient.invalidateQueries({ queryKey: ["campagne", variables.campaignId] });
+      queryClient.invalidateQueries({
+        queryKey: ["contributions", variables.campaignId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["campagne", variables.campaignId],
+      });
       queryClient.invalidateQueries({ queryKey: ["campagnes"] });
     },
   });
