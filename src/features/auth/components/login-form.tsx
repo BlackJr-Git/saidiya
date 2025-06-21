@@ -12,6 +12,7 @@ import { authClient } from "@/lib/shared/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { useConnectionStore } from "@/store/connection";
 // Définir le schéma de validation
 const loginSchema = z.object({
   email: z.string().email("Format d'email invalide"),
@@ -60,6 +61,9 @@ export function LoginForm({
             // toast.loading("Connexion en cours...");
           },
           onSuccess: () => {
+            // Update connection state
+            useConnectionStore.getState().setIsConnected(true);
+            
             //redirect to the dashboard
             toast.success("Connexion réussie");
             if (onSuccess) {

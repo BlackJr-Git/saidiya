@@ -12,6 +12,7 @@ import { authClient } from "@/lib/shared/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { useConnectionStore } from "@/store/connection";
 // Définir le schéma de validation
 const signupSchema = z
   .object({
@@ -73,6 +74,9 @@ export function SignupForm({
             // toast.loading("Inscription en cours...");
           },
           onSuccess: () => {
+            // Update connection state
+            useConnectionStore.getState().setIsConnected(true);
+            
             toast.success("Compte créé avec succès");
             
             // Appeler le callback si défini

@@ -9,8 +9,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Base64Image } from "@/components/ui/base64-image";
+// import { Base64Image } from "@/components/ui/base64-image";
 import { PublicCampagneInfo } from "@/types/campagne";
+import Image from "next/image";
 
 // Fonction pour formater les montants en dollars
 const formatCurrency = (amount: number) => {
@@ -88,20 +89,20 @@ export const CampagneCard = ({ campagne, variant = "default" }: CampagneCardProp
         <div className="relative">
           <div className="aspect-[16/9] overflow-hidden rounded-t-lg">
             {coverImage ? (
-              // <Image
-              //   src={coverImage}
-              //   alt={title}
-              //   width={600}
-              //   height={340}
-              //   className="object-cover w-full h-full transition-transform hover:scale-105"
-              // />
-              <Base64Image
-                base64String={coverImage}
+              <Image
+                src={coverImage}
                 alt={title}
                 width={600}
                 height={340}
                 className="object-cover w-full h-full transition-transform hover:scale-105"
               />
+              // <Base64Image
+              //   base64String={coverImage}
+              //   alt={title}
+              //   width={600}
+              //   height={340}
+              //   className="object-cover w-full h-full transition-transform hover:scale-105"
+              // />
             ) : (
               <div className="w-full h-full bg-muted flex items-center justify-center">
                 <span className="text-muted-foreground">Image non disponible</span>

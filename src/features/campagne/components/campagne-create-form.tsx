@@ -28,7 +28,7 @@ import { Label } from "@/components/ui/label";
 import { useCreateCampagne } from "@/features/campagne/hooks";
 import { CampagneCreate } from "@/types/campagne";
 import { useEffect } from "react";
-
+import {useConnectionStore} from "@/store/connection";
 // Catégories disponibles avec leurs icônes
 const categories = [
   { id: "education", label: "Éducation", icon: ImageIcon },
@@ -102,6 +102,7 @@ export function CampagneCreateForm() {
   
   // Vérifier si l'utilisateur est authentifié
   const { isAuthenticated, isLoading, user } = useAuth();
+  const {isConnected} = useConnectionStore();
   
   // Log pour débogage
   useEffect(() => {
@@ -190,7 +191,7 @@ export function CampagneCreateForm() {
   // Gestionnaire de soumission du formulaire
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     // Vérifier si l'utilisateur est authentifié avant de soumettre
-    if (!isAuthenticated) {
+    if (!isConnected) {
       console.log("User is not authenticated, showing auth dialog");
       setShowAuthDialog(true);
       console.log("showAuthDialog set to:", true);

@@ -8,6 +8,7 @@ import { LoginForm } from "./login-form";
 import { SignupForm } from "./signup-form";
 import { LogIn, UserPlus } from "lucide-react";
 
+
 interface AuthDialogProps {
   trigger?: React.ReactNode;
   defaultTab?: "login" | "signup";
