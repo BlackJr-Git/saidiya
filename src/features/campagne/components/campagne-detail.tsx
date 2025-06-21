@@ -8,17 +8,16 @@ import {
   CardContent, 
   CardDescription, 
   CardHeader, 
-  CardTitle,
-  CardFooter
+  CardTitle
 } from "@/components/ui/card";
 import { Share2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { PublicCampagneInfo } from "@/types/campagne";
 import { Base64Image } from "@/components/ui/base64-image";
+import { ContributionForm, ContributionList } from "@/features/contribution/components";
 
 // Fonction pour formater les montants en dollars
 const formatCurrency = (amount: number) => {
@@ -194,101 +193,64 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
         
         {/* Colonne de droite - Carte de financement fixe */}
         <div className="w-full lg:w-1/3">
-          <div className="lg:sticky lg:top-6">
-            <Card className="border-2 shadow-md">
+          <div className="lg:sticky lg:top-6 space-y-6">
+            {/* Carte de financement */}
+            <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-xl">Objectif de financement</CardTitle>
-                <CardDescription>
-                  <p className="flex items-center justify-between mt-1">
-                    <span className="font-semibold text-lg">
-                      {formatCurrency(currentAmount)}
-                    </span>
-                    <span className="text-muted-foreground">
-                      sur {formatCurrency(targetAmount)}
-                    </span>
-                  </p>
-                </CardDescription>
+                <CardTitle className="text-xl">Financement</CardTitle>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-2xl font-bold">{formatCurrency(currentAmount)}</span>
+                  <span className="text-sm text-muted-foreground">sur {formatCurrency(targetAmount)}</span>
+                </div>
               </CardHeader>
               <CardContent>
-                <Progress value={progress} className="h-3" />
-                <div className="flex items-center justify-between mt-2 text-sm">
-                  <span>{Math.round(progress)}% financé</span>
-                  {status === "active" && (
-                    <span className="text-muted-foreground">
-                      Il reste 45 jours
-                    </span>
-                  )}
+                {/* Barre de progression */}
+                <Progress value={progress} className="h-2" />
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-sm">{progress}%</span>
+                  <span className="text-sm text-muted-foreground">{Math.round(currentAmount / targetAmount * 100)}% financé</span>
                 </div>
                 
+                {/* Affichage du temps restant pour les campagnes actives */}
                 {status === "active" && (
-                  <Button className="w-full mt-4 font-medium">Soutenir cette campagne</Button>
-                )}
-                
-                {status === "completed" && (
-                  <div className="w-full mt-4 text-center py-2 bg-muted rounded-md text-success font-medium">
-                    Objectif atteint !
+                  <div className="mt-2 text-sm text-muted-foreground">
+                    Il reste 45 jours
                   </div>
                 )}
-                
-                {/* Bouton de partage */}
-                <div className="flex items-center justify-center mt-4 pt-2 border-t">
-                  <Button variant="outline" className="w-full gap-2">
-                    <Share2 size={16} />
-                    Partager cette campagne
-                  </Button>
+
+                {/* Formulaire de contribution pour les campagnes actives */}
+                {status === "active" && (
+                  <div className="mt-4">
+                    <ContributionForm campaignId={campagne.id} />
+                  </div>
+                )}
+
+                {/* Résumé des contributions */}
+                {/* <div className="mt-6">
+                  <ContributionSummary campaignId={campagne.id} />
+                </div> */}
+
+                {/* Partage */}
+                <div className="pt-4 mt-4 border-t">
+                  <p className="text-sm font-medium mb-2">Partager cette campagne</p>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="icon" className="rounded-full">
+                      <Share2 size={16} />
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
-              
-              {/* Liste des derniers dons */}
-              <CardFooter className="flex flex-col p-4 pt-2 border-t">
-                <h3 className="text-sm font-medium mb-3">Derniers dons</h3>
-                <div className="space-y-3 w-full">
-                  {/* Donation 1 */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="/avatars/01.png" />
-                        <AvatarFallback>GN</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">Gad Ntenta</p>
-                        <p className="text-xs text-muted-foreground">Il y a 2 jours</p>
-                      </div>
-                    </div>
-                    <p className="font-medium">75 €</p>
-                  </div>
-                  
-                  {/* Donation 2 */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="/avatars/05.png" />
-                        <AvatarFallback>JA</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">Junior Asosa</p>
-                        <p className="text-xs text-muted-foreground">Il y a 5 jours</p>
-                      </div>
-                    </div>
-                    <p className="font-medium">120 €</p>
-                  </div>
-                  
-                  {/* Donation 3 */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src="/avatars/03.png" />
-                        <AvatarFallback>GR</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">Grace Imani</p>
-                        <p className="text-xs text-muted-foreground">Il y a 1 semaine</p>
-                      </div>
-                    </div>
-                    <p className="font-medium">50 €</p>
-                  </div>
-                </div>
-              </CardFooter>
+            </Card>
+            
+            {/* Liste des contributions récentes */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Contributions récentes</CardTitle>
+                <CardDescription>Les derniers soutiens à cette campagne</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ContributionList campaignId={campagne.id} limit={5} />
+              </CardContent>
             </Card>
           </div>
         </div>
