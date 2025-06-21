@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/shared/prisma";
+import { cloudinaryUpload } from "@/features/campagne/services/cloudinary-upload";
 
 // GET /api/campagnes - Liste des campagnes avec filtres optionnels
 export async function GET(request: NextRequest) {
@@ -15,12 +16,12 @@ export async function GET(request: NextRequest) {
     // Construire les conditions de filtrage
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const whereConditions: any = {};
-    
+
     // Filtre par statut
     if (status) {
       whereConditions.status = status;
     }
-    
+
     // Filtre par utilisateur (mes campagnes)
     if (userId) {
       // Si on filtre par utilisateur, vérifier que l'utilisateur actuel est autorisé
@@ -45,21 +46,22 @@ export async function GET(request: NextRequest) {
           select: {
             id: true,
             name: true,
-            image: true
-          }
-        }
+            image: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: "desc" // Dernier créé en premier
-      }
+        createdAt: "desc", // Dernier créé en premier
+      },
     });
 
     // Ajouter le pourcentage de progression à chaque campagne
-    const campaignsWithProgress = campaigns.map(campaign => {
-      const progress = campaign.targetAmount > 0 
-        ? (campaign.currentAmount / campaign.targetAmount) * 100 
-        : 0;
-      
+    const campaignsWithProgress = campaigns.map((campaign) => {
+      const progress =
+        campaign.targetAmount > 0
+          ? (campaign.currentAmount / campaign.targetAmount) * 100
+          : 0;
+
       return {
         ...campaign,
         progress: Math.round(progress * 10) / 10, // Arrondir à 1 décimale
@@ -82,7 +84,7 @@ export async function POST(request: NextRequest) {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    
+
     // Vérifier si l'utilisateur est authentifié
     if (!session || !session.user) {
       return NextResponse.json(
@@ -93,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     const userId = session.user.id;
     const body = await request.json();
-    
+
     // Valider les données requises
     if (!body.title || !body.targetAmount || !body.category) {
       return NextResponse.json(
@@ -102,12 +104,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const base64 = body.coverImage;
+
+    const imageUri = `data:${"image/jpeg"};base64,${base64}`;
+
+    const coverImage = await cloudinaryUpload(imageUri);
+
     // Créer la campagne
     const campaign = await prisma.campaign.create({
       data: {
         title: body.title,
         description: body.description,
-        coverImage: body.coverImage,
+        coverImage: coverImage,
         targetAmount: body.targetAmount,
         currentAmount: 0, // Commence à zéro
         category: body.category,
@@ -116,7 +124,7 @@ export async function POST(request: NextRequest) {
         endDate: body.endDate ? new Date(body.endDate) : undefined,
         localisation: body.localisation,
         userId: userId,
-      }
+      },
     });
 
     return NextResponse.json(campaign, { status: 201 });
