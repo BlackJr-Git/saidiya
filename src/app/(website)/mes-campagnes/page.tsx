@@ -146,10 +146,10 @@ export default function MesCampagnesPage() {
                       <TableCell>{getStatusBadge(campaign.status)}</TableCell>
                       <TableCell>{formatDate(campaign.createdAt)}</TableCell>
                       <TableCell>
-                        {campaign.targetAmount.toLocaleString()} €
+                        {campaign.targetAmount.toLocaleString()} $
                       </TableCell>
                       <TableCell>
-                        {campaign.currentAmount.toLocaleString()} €
+                        {campaign.currentAmount.toLocaleString()} $
                       </TableCell>
                       <TableCell>
                         <div className="w-full bg-gray-200 rounded-full h-2.5">

@@ -101,7 +101,7 @@ export function ContributionForm({
             name="amount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Montant (€)</FormLabel>
+                <FormLabel>Montant ($)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -114,7 +114,7 @@ export function ContributionForm({
                   />
                 </FormControl>
                 <FormDescription>
-                  Montant minimum: {minAmount}€, maximum: {maxAmount}€
+                  Montant minimum: {minAmount}$, maximum: {maxAmount}$
                 </FormDescription>
                 <FormMessage />
               </FormItem>

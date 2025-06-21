@@ -84,7 +84,7 @@ export function HeroSection() {
           <div className="bg-background border border-primary/20 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform -rotate-6 hover:-rotate-3 w-52">
             <div className="flex flex-col gap-2">
               <div className="text-primary text-sm font-semibold">STATISTIQUES</div>
-              <div className="text-2xl font-bold">5.2M€</div>
+              <div className="text-2xl font-bold">5.2M$</div>
               <div className="text-muted-foreground text-sm">Fonds collectés</div>
               <div className="mt-2 flex items-center gap-1">
                 <div className="text-[#10B981] font-medium">+24%</div>

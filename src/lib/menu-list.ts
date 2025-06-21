@@ -60,8 +60,8 @@ export function getMenuList(pathname: string): Group[] {
           ]
         },
         {
-          href: "/categories",
-          label: "Categories",
+          href: "/campagnes/status",
+          label: "Campagnes",
           icon: Bookmark
         },
         {
