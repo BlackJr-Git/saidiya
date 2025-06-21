@@ -34,7 +34,10 @@ export function ContributionList({
       <div className="space-y-4">
         <h3 className="text-xl font-semibold mb-4">Contributions récentes</h3>
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="flex items-start space-x-4 p-4 border rounded-md">
+          <div
+            key={index}
+            className="flex items-start space-x-4 p-4 border rounded-md"
+          >
             <Skeleton className="h-10 w-10 rounded-full" />
             <div className="space-y-2 flex-1">
               <Skeleton className="h-4 w-1/4" />
@@ -75,40 +78,45 @@ export function ContributionList({
   return (
     <div className="space-y-4">
       <h3 className="text-xl font-semibold mb-4">Contributions récentes</h3>
-      
+
       {data.contributions.map((contribution) => (
         <div
           key={contribution.id}
           className="flex items-start space-x-4 p-4 border rounded-md hover:bg-accent/5 transition-colors"
         >
           <Avatar>
-            {contribution.anonymous || !contribution.userImage ? (
+            {contribution.anonymous || !contribution?.user?.image ? (
               <AvatarFallback>
-                {contribution.anonymous ? "AN" : contribution.userName?.charAt(0) || "?"}
+                {contribution.anonymous
+                  ? "AN"
+                  : contribution?.user?.name?.charAt(0) || "?"}
               </AvatarFallback>
             ) : (
-              <AvatarImage src={contribution.userImage} alt={contribution.userName || ""} />
+              <AvatarImage
+                src={contribution.user.image}
+                alt={contribution.user.name || ""}
+              />
             )}
           </Avatar>
-          
+
           <div className="flex-1">
             <div className="flex justify-between items-start">
               <h4 className="font-medium">
                 {contribution.anonymous
                   ? "Contributeur anonyme"
-                  : contribution.userName || "Inconnu"}
+                  : contribution?.user?.name || "Inconnu"}
               </h4>
               <span className="text-sm font-semibold text-primary">
                 {formatCurrency(contribution.amount)}
               </span>
             </div>
-            
+
             {contribution.message && (
               <p className="text-sm text-muted-foreground mt-1">
-                &quot;Merci pour cette campagne&quot;
+                &quot;{contribution.message}&quot;
               </p>
             )}
-            
+
             <p className="text-xs text-muted-foreground mt-2">
               {formatDistanceToNow(new Date(contribution.createdAt), {
                 addSuffix: true,

@@ -12,9 +12,11 @@ export interface ContributionResponse {
   anonymous: boolean;
   createdAt: string;
   campaignId: string;
-  userId?: string;
-  userName?: string;
-  userImage?: string;
+  user?: {
+    id: string;
+    name: string;
+    image: string;
+  };
 }
 
 export interface ContributionStats {
