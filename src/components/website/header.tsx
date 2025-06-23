@@ -22,8 +22,7 @@ const menuItems = [
   // { name: "Solution", href: "/solution" },
   // { name: "Pricing", href: "/pricing" },
   { name: "Campagnes", href: "/campagnes" },
-  { name: "Aides", href: "/aides" },
-  { name: "Blog", href: "/blog" },
+  { name: "Contact", href: "/contact" },
   { name: "FAQ", href: "/faq" },
   { name: "A propos", href: "/about" },
 ];

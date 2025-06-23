@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutGrid, LogOut, User } from "lucide-react";
+import { Folders, LayoutGrid, LogOut, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,9 +30,7 @@ export function UserNav() {
   const router = useRouter();
 
   if (!currentUser) {
-    return (
-      <LoginButton size="sm" />
-    );
+    return <LoginButton size="sm" />;
   }
 
   return (
@@ -78,6 +76,12 @@ export function UserNav() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="hover:cursor-pointer" asChild>
+            <Link href="/mes-campagnes" className="flex items-center">
+              <Folders className="w-4 h-4 mr-3 text-muted-foreground" />
+              Mes campagnes
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="hover:cursor-pointer" asChild>
             <Link href="/account" className="flex items-center">
               <User className="w-4 h-4 mr-3 text-muted-foreground" />
               Profile
@@ -85,7 +89,10 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => signOut(router, "/")}>
+        <DropdownMenuItem
+          className="hover:cursor-pointer"
+          onClick={() => signOut(router, "/")}
+        >
           <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
           Deconnexion
         </DropdownMenuItem>

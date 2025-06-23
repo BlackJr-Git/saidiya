@@ -22,8 +22,8 @@ export const siteConfig = {
   // Contact information
   contact: {
     email: "contact@saidiya.com",
-    phone: "+1 (123) 456-7890",
-    address: "123 Heritage Lane, Cultural District, CA 94123",
+    phone: "+243 852 222 222",
+    address: "123 Mianda, Kinshasa, Congo",
   },
 
   // Social media links
