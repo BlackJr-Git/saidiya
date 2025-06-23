@@ -1,6 +1,6 @@
 "use client";
 
-// import Image from "next/image";
+import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { 
@@ -18,7 +18,8 @@ import { Separator } from "@/components/ui/separator";
 import { PublicCampagneInfo } from "@/types/campagne";
 // import { Base64Image } from "@/components/ui/base64-image";
 import Image from "next/image";
-import { ContributionForm, ContributionList } from "@/features/contribution/components";
+import { ContributionList } from "@/features/contribution/components";
+import { ContributionModal } from "@/features/contribution/components/contribution-modal";
 
 // Fonction pour formater les montants en dollars
 const formatCurrency = (amount: number) => {
@@ -112,6 +113,9 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
     category,
     createdAt
   } = campagne;
+  
+  // État pour contrôler l'affichage du modal de contribution
+  const [isContributionModalOpen, setIsContributionModalOpen] = useState(false);
   
   // S'assurer que createdAt est une date valide avant de la formater
   const timeAgo = createdAt ? formatDistanceToNow(new Date(createdAt), { 
@@ -219,10 +223,23 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
                   </div>
                 )}
 
-                {/* Formulaire de contribution pour les campagnes actives */}
+                {/* Bouton de contribution pour les campagnes actives */}
                 {status === "active" && (
                   <div className="mt-4">
-                    <ContributionForm campaignId={campagne.id} />
+                    <Button 
+                      className="w-full" 
+                      size="lg" 
+                      onClick={() => setIsContributionModalOpen(true)}
+                    >
+                      Contribuer maintenant
+                    </Button>
+                    
+                    {/* Modal de contribution */}
+                    <ContributionModal
+                      campaignId={campagne.id}
+                      isOpen={isContributionModalOpen}
+                      onClose={() => setIsContributionModalOpen(false)}
+                    />
                   </div>
                 )}
 
