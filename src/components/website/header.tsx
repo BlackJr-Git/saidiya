@@ -22,9 +22,9 @@ const menuItems = [
   // { name: "Solution", href: "/solution" },
   // { name: "Pricing", href: "/pricing" },
   { name: "Campagnes", href: "/campagnes" },
-  { name: "Contact", href: "/contact" },
-  { name: "FAQ", href: "/faq" },
   { name: "A propos", href: "/about" },
+  { name: "FAQ", href: "/faq" },
+  { name: "Contact", href: "/contact" },
 ];
 
 export default function Header() {
