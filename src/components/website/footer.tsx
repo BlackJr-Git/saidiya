@@ -5,27 +5,19 @@ import { siteConfig } from "@/config";
 const links = [
   {
     title: "A propos",
-    href: "#",
+    href: "/about",
   },
   {
     title: "Contact",
-    href: "#",
+    href: "/contact",
   },
   {
     title: "Campagnes",
-    href: "#",
-  },
-  {
-    title: "Aides",
-    href: "#",
-  },
-  {
-    title: "Blog",
-    href: "#",
+    href: "/campagnes",
   },
   {
     title: "FAQ",
-    href: "#",
+    href: "/faq",
   },
 ];
 
