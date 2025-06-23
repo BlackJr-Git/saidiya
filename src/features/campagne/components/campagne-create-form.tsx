@@ -24,6 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import { Label } from "@/components/ui/label";
 import { useCreateCampagne } from "@/features/campagne/hooks";
 import { CampagneCreate } from "@/types/campagne";
@@ -37,6 +38,10 @@ const categories = [
   { id: "culture", label: "Culture", icon: ImageIcon },
   { id: "tech", label: "Technologie", icon: ImageIcon },
   { id: "community", label: "Communauté", icon: ImageIcon },
+  { id: "sport", label: "Sport", icon: ImageIcon },
+  { id: "art", label: "Art", icon: ImageIcon },
+  { id: "music", label: "Musique", icon: ImageIcon },
+  { id: "business", label: "Entreprise", icon: ImageIcon },
   { id: "other", label: "Autre", icon: ImageIcon },
 ];
 

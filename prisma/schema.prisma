@@ -29,6 +29,10 @@ enum Category {
   culture
   tech
   community
+  sport
+  art
+  music
+  business
   other
 }
 
@@ -104,6 +108,7 @@ model Campaign {
   currentAmount Float
   category      Category
   status        Status         @default(active)
+  isHighlight   Boolean        @default(false)
   startDate     DateTime?       @default(now())
   endDate       DateTime?       @default(now())
   localisation  String?
