@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { fileToBase64, fileToPreviewUrl } from "@/utils/file";
-import { useAuth } from "@/features/auth/hooks";
+// import { useAuth } from "@/features/auth/hooks";
 import { AuthDialog } from "@/features/auth/components/auth-dialog";
 import * as z from "zod";
 import { Check, Loader2, ImageIcon } from "lucide-react";
@@ -27,7 +27,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { useCreateCampagne } from "@/features/campagne/hooks";
 import { CampagneCreate } from "@/types/campagne";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import {useConnectionStore} from "@/store/connection";
 // Catégories disponibles avec leurs icônes
 const categories = [
@@ -101,13 +101,13 @@ export function CampagneCreateForm() {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   
   // Vérifier si l'utilisateur est authentifié
-  const { isAuthenticated, isLoading, user } = useAuth();
+  // const { isAuthenticated, isLoading, user } = useAuth();
   const {isConnected} = useConnectionStore();
   
   // Log pour débogage
-  useEffect(() => {
-    console.log("Auth state:", { isAuthenticated, isLoading, user, showAuthDialog });
-  }, [isAuthenticated, isLoading, user, showAuthDialog]);
+  // useEffect(() => {
+  //   console.log("Auth state:", { isAuthenticated, isLoading, user, showAuthDialog });
+  // }, [isAuthenticated, isLoading, user, showAuthDialog]);
 
   // Utiliser le hook de création de campagne
   const createCampagneMutation = useCreateCampagne();

@@ -26,14 +26,15 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/date";
+import { use } from "react";
 
 export default function CampaignStatusPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const router = useRouter();
-  const { id } = params;
+  const { id } = use(params);
   const [status, setStatus] = useState<string | undefined>(undefined);
 
   // Récupérer les détails de la campagne
