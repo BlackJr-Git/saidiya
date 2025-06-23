@@ -8,7 +8,7 @@ export const siteConfig = {
   name: "Saidiya",
   title: "Saidiya - Plateforme de Financement Participatif",
   description:
-    "Une plateforme innovante de financement participatif pour soutenir des projets impactants et créer du changement ensemble.",
+    "Une plateforme de financement participatif pour soutenir des projets impactants et créer du changement ensemble.",
   url: "https://saidiya.com",
 
   // Branding and visuals
