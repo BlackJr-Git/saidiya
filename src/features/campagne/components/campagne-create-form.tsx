@@ -8,7 +8,7 @@ import { fileToBase64, fileToPreviewUrl } from "@/utils/file";
 // import { useAuth } from "@/features/auth/hooks";
 import { AuthDialog } from "@/features/auth/components/auth-dialog";
 import * as z from "zod";
-import { Check, Loader2, ImageIcon } from "lucide-react";
+import { Check, Loader2, BookOpen, Heart, Leaf, Palette, Laptop, Users, Trophy, Brush, Music, Building2, HelpCircle } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -32,17 +32,17 @@ import { CampagneCreate } from "@/types/campagne";
 import {useConnectionStore} from "@/store/connection";
 // Catégories disponibles avec leurs icônes
 const categories = [
-  { id: "education", label: "Éducation", icon: ImageIcon },
-  { id: "health", label: "Santé", icon: ImageIcon },
-  { id: "environment", label: "Environnement", icon: ImageIcon },
-  { id: "culture", label: "Culture", icon: ImageIcon },
-  { id: "tech", label: "Technologie", icon: ImageIcon },
-  { id: "community", label: "Communauté", icon: ImageIcon },
-  { id: "sport", label: "Sport", icon: ImageIcon },
-  { id: "art", label: "Art", icon: ImageIcon },
-  { id: "music", label: "Musique", icon: ImageIcon },
-  { id: "business", label: "Entreprise", icon: ImageIcon },
-  { id: "other", label: "Autre", icon: ImageIcon },
+  { id: "education", label: "Éducation", icon: BookOpen },
+  { id: "health", label: "Santé", icon: Heart },
+  { id: "environment", label: "Environnement", icon: Leaf },
+  { id: "culture", label: "Culture", icon: Palette },
+  { id: "tech", label: "Technologie", icon: Laptop },
+  { id: "community", label: "Communauté", icon: Users },
+  { id: "sport", label: "Sport", icon: Trophy },
+  { id: "art", label: "Art", icon: Brush },
+  { id: "music", label: "Musique", icon: Music },
+  { id: "business", label: "Entreprise", icon: Building2 },
+  { id: "other", label: "Autre", icon: HelpCircle },
 ];
 
 // Conseils pour chaque étape du formulaire
@@ -408,7 +408,7 @@ export function CampagneCreateForm() {
                         </div>
                       ) : (
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <ImageIcon className="w-10 h-10 mb-3 text-muted-foreground" />
+                          <Laptop className="w-10 h-10 mb-3 text-muted-foreground" />
                           <p className="mb-2 text-sm text-muted-foreground">
                             <span className="font-semibold">
                               Cliquez pour charger
