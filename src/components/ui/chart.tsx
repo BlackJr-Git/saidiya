@@ -145,8 +145,8 @@ function ChartTooltipContent({
     indicator?: "line" | "dot" | "dashed"
     nameKey?: string
     labelKey?: string
-    labelFormatter?: (label: any, payload: any[]) => React.ReactNode
-    formatter?: (value: any, name: any, props: any) => React.ReactNode
+    labelFormatter?: (label: React.ReactNode, payload: Array<{ [key: string]: unknown }>) => React.ReactNode
+    formatter?: (value: string | number, name: string, props: { [key: string]: unknown }) => React.ReactNode
   }) {
   const { config } = useChart()
 
@@ -201,7 +201,7 @@ function ChartTooltipContent({
     >
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
-        {payload.map((item, index) => {
+        {payload.map((item) => {
           const key = `${nameKey || item.name || item.dataKey || "value"}`
           const itemConfig = getPayloadConfigFromPayload(config, item, key)
           const indicatorColor = color || (item.payload?.fill) || item.color
@@ -215,7 +215,7 @@ function ChartTooltipContent({
               )}
             >
               {formatter && item?.value !== undefined && item.name ? (
-                formatter(item.value, item.name, item, index, item.payload)
+                formatter(item.value, item.name, item.payload)
               ) : (
                 <>
                   {itemConfig?.icon ? (
