@@ -10,12 +10,13 @@ import {
   CardHeader, 
   CardTitle
 } from "@/components/ui/card";
-import { Share2 } from "lucide-react";
+import { Share2, BarChart2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { PublicCampagneInfo } from "@/types/campagne";
+import { useCampagneOwnership } from "@/features/campagne/hooks/ownership";
 // import { Base64Image } from "@/components/ui/base64-image";
 import Image from "next/image";
 import { ContributionList } from "@/features/contribution/components";
@@ -248,10 +249,15 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
                   <ContributionSummary campaignId={campagne.id} />
                 </div> */}
 
-                {/* Partage */}
+                {/* Statistiques et Partage */}
                 <div className="pt-4 mt-4 border-t">
-                  <p className="text-sm font-medium mb-2">Partager cette campagne</p>
-                  <div className="flex space-x-2">
+                  <div className="flex justify-between items-center mb-3">
+                    <p className="text-sm font-medium">Actions</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {/* Button de statistiques visible uniquement par le propriétaire */}
+                    <CampagneOwnerAction id={campagne.id} />
+                    
                     <Button variant="outline" size="icon" className="rounded-full">
                       <Share2 size={16} />
                     </Button>
@@ -274,6 +280,32 @@ export default function CampagneDetail({ campagne, isLoading = false }: Campagne
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Composant d'action visible uniquement par le propriétaire de la campagne
+ */
+function CampagneOwnerAction({ id }: { id: string }) {
+  // Vérifier si l'utilisateur est le propriétaire de la campagne
+  const { data: isOwner } = useCampagneOwnership(id);
+  
+  if (!isOwner) {
+    return null;
+  }
+  
+  return (
+    <Button 
+      variant="outline" 
+      size="sm" 
+      className="flex items-center gap-2"
+      asChild
+    >
+      <a href={`/campagnes/${id}/statistique`}>
+        <BarChart2 size={16} />
+        Statistiques
+      </a>
+    </Button>
   );
 }
 
