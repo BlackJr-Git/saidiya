@@ -21,8 +21,8 @@ export const siteConfig = {
 
   // Contact information
   contact: {
-    email: "contact@saidiya.com",
-    phone: "+243 852 222 222",
+    email: "saidiya615@gmail.com",
+    phone: "+243 851 750 853",
     address: "123 Mianda, Kinshasa, Congo",
   },
 

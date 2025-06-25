@@ -6,6 +6,7 @@
 import { authClient } from "@/lib/shared/auth-client";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { api } from "@/lib/shared/api";
+// import { setIsConnected } from "@/lib/shared/store";
 /**
  * Déconnexion de l'utilisateur
  * @param router - L'instance du router Next.js pour la redirection
