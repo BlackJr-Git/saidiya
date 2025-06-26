@@ -102,7 +102,7 @@ export function HeroSection() {
           <div className="bg-background border border-accent/20 rounded-xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform rotate-6 hover:rotate-3 w-52">
             <div className="flex flex-col gap-2">
               <div className="text-accent text-sm font-semibold">PROJETS FINANCÉS</div>
-              <div className="text-2xl font-bold">234</div>
+              <div className="text-2xl font-bold">247</div>
               <div className="text-muted-foreground text-sm">Campagnes réussies</div>
               <div className="flex items-center justify-between mt-3">
                 <div className="flex flex-col items-center">
